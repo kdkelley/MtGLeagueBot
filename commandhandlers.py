@@ -182,6 +182,16 @@ async def handleDebugChangeStartDate(message):
 
 async def handleCardpool(message):
     messageSplit = message.content.split()
+
+    if len(messageSplit) < 2:
+        response = "Cardpool Command:\n"
+        response += "Usage: "
+        response += "!league cardpool @user\n"
+        response += "@user, if included, must be a valid mention on Discord.\n"
+        response += "If @user is not included, will get the cardpool of the one who sent the message.\n"
+        leagueutils.PMuser(message.author, response)
+        return
+
     target = None
     if len(messageSplit) == 2:
         target = message.author.id
@@ -244,7 +254,7 @@ async def handleReport(message):
         return
 
     if len(gamesThisWeek) >= leaguedata.MAX_IDENTICAL_GAMES_PER_WEEK:
-        response = "Players have already played " + str(len(gamesThisWeek)) + " time(s) today. (Limit: " + str(leaguedata.MAX_IDENTICAL_GAMES_PER_WEEK) + ")\n"
+        response = "Players have already played " + str(len(gamesThisWeek)) + " time(s) this week. (Limit: " + str(leaguedata.MAX_IDENTICAL_GAMES_PER_WEEK) + ")\n"
         await leagueutils.sendMessage(message.channel, response)
         return
 

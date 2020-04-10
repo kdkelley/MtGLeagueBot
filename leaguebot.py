@@ -27,7 +27,8 @@ client = discord.Client()
 
 @client.event
 async def on_ready():
-   print(f'{client.user} has connected to Discord!')
+    print(f'{client.user} has connected to Discord!')
+    await client.change_presence(activity=discord.Game(name="Magic the Gathering", type=1))
 
 @client.event
 async def on_message(message):
@@ -45,18 +46,15 @@ async def on_message(message):
     command = message.content[len(COMMAND_PHRASE):].strip().lower().split()[0]
 
     if command == "kill" and message.author.id == leaguedata.OWNER_ID:
-        print("recieved kill command")
         leaguedata.kill()
         sys.exit()
     elif command == "help":
         print()
         await commandhandlers.handleHelp(message)
     elif command == "join":
-        print("user wants to join the league")
         # "doable in any channel by anyone"
         await commandhandlers.handleJoin(message)
     elif command == "report":
-        print("user wants to report a game")
         # "doable in public channel only"
         # format:
         # !league report @otheruser [I/They] won
@@ -66,7 +64,6 @@ async def on_message(message):
         # says if the loser gets to open another pack
         await commandhandlers.handleReport(message)
     elif command == "openpack":
-        print("user wants to open a pack")
         # "doable in public channel only"
         # checks if the user is allowed to open a pack
         # generates a pack
@@ -74,7 +71,6 @@ async def on_message(message):
         # adds pack contents to that user's cardpool
         await commandhandlers.handleOpenPack(message)
     elif command == "cardpool":
-        print("user wants to check someone's cardpool")
         # "doable in private channel only, except by mods"
         # format:
         # !league cardpool [target]
@@ -82,7 +78,6 @@ async def on_message(message):
         # displays the target's entire cardpool they have gotten from packs
         await commandhandlers.handleCardpool(message)
     elif command == "leaderboard":
-        print("user wants to see the current leaderboard")
         # "doable in private channel only, except by mods"
         # format:
         # !league leaderboard [days]
@@ -91,7 +86,6 @@ async def on_message(message):
         # leaderboard is just sorted by number of wins, uses losses as tiebreaker, UID double tiebreaker
         await commandhandlers.handleLeaderboard(message)
     elif command == "setmod":
-        print("user wants to modify permissions for someone")
         # "doable in any channel by owner only"
         # format:
         # !league set-owner @user [value]
@@ -105,6 +99,7 @@ async def on_message(message):
     elif command == "debug-recon-db" and message.author.id == leaguedata.OWNER_ID:
         leaguedata.connect()
     else:
+        print("Command unrecognized.")
         leagueutils.sendMessage(message.channel, "Command not recognized.")
 
 client.run(TOKEN)
