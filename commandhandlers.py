@@ -226,6 +226,12 @@ async def handleReport(message):
     # gotta infrom loser of their new lose total (and if they can open a new pack)
     # for now intentionally not checking if the target is in the league or not, for debug
     messageSplit = message.content.split()
+
+    if len(messageSplit < 4):
+        response = "You are missing an argument. The game was not recorded.\n"
+        leagueutils.sendMessage(message.channel, response)
+        return
+
     winner = messageSplit[3].lower()
     winnerID = None
     loserID = None
@@ -235,6 +241,10 @@ async def handleReport(message):
     elif winner == "they" or winner == "them":
         winnerID = messageSplit[2][3:-1]
         loserID = message.author.id
+    else:
+        response = "Winner could not be identified.\nPlease use I/Me/Them/They to denote the winner.\n"
+        leagueutils.sendMessage(message.channel, response)
+        return
 
     if not leaguedata.isUserInLeague(message.author.id):
         response = "You are not in the league.\n"
@@ -265,12 +275,10 @@ async def handleReport(message):
     newLosses = leaguedata.getPlayerLosses(loserID)
 
     response += leaguedata.getPlayerName(winnerID) + " now has " + str(newWins) + " wins.\n"
-    response += leaguedata.getPlayerName(loserID) + " now has " + str(newLosses) + " losses."
+    response += leaguedata.getPlayerName(loserID) + " now has " + str(newLosses) + " losses.\n"
 
     if newLosses % leaguedata.LOSSES_PER_PACK == 0:
-        response += " They may open another pack using \"!league openpack\".\n"
-    else:
-        response += "\n"
+        response += "They may open another pack using \"!league openpack\".\n"
 
     await leagueutils.sendMessage(message.channel, response)
 
