@@ -1,8 +1,10 @@
 #TODO:
 # make help and join actually useful and tell you all the commands
-# send packs and cardpools as files, rather than just text
-# make sure commands are used in the correct place
-# make opening a pack fancier
+# reup code on the pi to include the patch to give mods access to "kill"
+# add better mod tools in order to fix any problems that may come up
+# have cards listed in cardpool start all in the sideboard to make deckbuilding easier
+# have cards within the cardpool itself
+# give mods a listing of all the commands they have in help, and give them better commands to reverse games and the like
 
 import discord
 
@@ -45,7 +47,7 @@ async def on_message(message):
 
     command = message.content[len(COMMAND_PHRASE):].strip().lower().split()[0]
 
-    if command == "kill" and message.author.id == leaguedata.OWNER_ID:
+    if command == "kill" and leaguedata.isMod(message.author.id):
         leaguedata.kill()
         sys.exit()
     elif command == "help":

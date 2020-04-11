@@ -95,12 +95,17 @@ def getPlayerOpenedPacks(id):
     return KTKopened, FRFopened, DTKopened, LOSSopened
 
 def playerOpenedPack(id, p, isLossPack):
+    global c
+    global conn
     cardContentString = "|".join(p.cardData)
     cardContentString = cardContentString.replace("\'", "\'\'")
     command = "INSERT INTO packs (playerid, setcode, isLoss, contents) VALUES (" + str(id) + ", \'" + p.set + "\', " + str(int(isLossPack)) + ", \'" + cardContentString + "\')"
     c.execute(command)
+    conn.commit()
 
 def getCardpool(id):
+    global c
+    global conn
     cardpool = []
     command = "SELECT contents FROM packs WHERE playerid=" + str(id)
     for row in c.execute(command):
@@ -110,8 +115,11 @@ def getCardpool(id):
     return cardpool
 
 def addPlayer(author):
+    global c
+    global conn
     playerName = author.name.replace("\'", "\'\'")
     c.execute("INSERT INTO players (id, name) VALUES (" + str(author.id) + ", \'" + playerName + "\')")
+    conn.commit()
     return
 
 def isMod(id):
@@ -121,10 +129,16 @@ def isMod(id):
         return row[0] == 1
 
 def setMod(id, value):
+    global c
+    global conn
     c.execute("UPDATE players SET isMod=" + str(value) + " WHERE id=" + str(id))
+    conn.commit()
 
 def addGame(winnerID, loserID):
+    global c
+    global conn
     c.execute("INSERT INTO games (winner, loser) VALUES (" + str(winnerID) + ", " + str(loserID) + ")")
+    conn.commit()
 
 def isOwner(id):
     return id == OWNER_ID

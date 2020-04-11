@@ -227,7 +227,7 @@ async def handleReport(message):
     # for now intentionally not checking if the target is in the league or not, for debug
     messageSplit = message.content.split()
 
-    if len(messageSplit < 4):
+    if len(messageSplit) < 4:
         response = "You are missing an argument. The game was not recorded.\n"
         leagueutils.sendMessage(message.channel, response)
         return
