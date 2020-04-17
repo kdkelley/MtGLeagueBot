@@ -1,0 +1,9 @@
+# TODO:
+# make join actually useful and PM you all the commands
+# add better mod tools in order to fix any problems that may come up
+# give mods a listing of all the commands they have in help, and give them better commands to reverse games and the like
+# have openpack tell you if/how many packs you have left to open
+# have help for individual commands
+# completely rework the way that command handling works to reduce code duplication and improve permissions / input parsing
+# redo the league data file to use only prepared statements
+# create a way to view listings of players, games, .etc

@@ -1,11 +1,3 @@
-#TODO:
-# make help and join actually useful and tell you all the commands
-# reup code on the pi to include the patch to give mods access to "kill"
-# add better mod tools in order to fix any problems that may come up
-# have cards listed in cardpool start all in the sideboard to make deckbuilding easier
-# have cards within the cardpool itself
-# give mods a listing of all the commands they have in help, and give them better commands to reverse games and the like
-
 import discord
 
 import os
