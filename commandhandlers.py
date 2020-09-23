@@ -23,12 +23,39 @@ async def __getHelpResponse(message):
         response += "\"!league join\" without the quotes\n"
         return response
 
+    response += "\nCommands:\n"
+    response += "\"!league help\" -- Get this message.\n"
+    response += "\"!league status\" -- See wins and losses, if you have packs to open, .etc\n"
+    response += "\"!league report @otherplayer Me/I/Them/They\" -- Report the result of a game. If you type \"me\" or \"I\" that means you (the person posting the message) won and vise versa.\n"
+    response += "\"!league openpack\" -- Opens a pack (if you have any to open). The contents of which are automatically added to your cardpool.\n"
+    response += "\"!league cardpool [@player]\" -- Bot will PM you a .txt with @player's cardpool. If no player is specified, it will send you your own card pool.\n"
+    response += "\"!league leaderboard\" -- See the current leaderboard."
+
+    response += "\nAdvisories & Other Information:\n"
+    response += "The card called 'Fire' in Ultimate Masters really stands for the split card 'Fire // Ice'."
+
+#    response += "KTKpacks = " + str(KTKopened) + " / " + str(KTKpacks) + "\n"
+#    response += "FRFpacks = " + str(FRFopened) + " / " + str(FRFpacks) + "\n"
+#    response += "DTKpacks = " + str(DTKopened) + " / " + str(DTKpacks) + "\n"
+#    response += "losspacks = " + str(lossopened) + " / " + str(losspacks) + "\n"
+    return response
+
+async def __getStatusResponse(message):
+
+    response = "Status:\n"
+
+    if not leaguedata.isUserInLeague(message.author.id):
+        response += "You are NOT in the league\n"
+        response += "You can join the league with the command:\n"
+        response += "\"!league join\" without the quotes\n"
+        return response
+
     wins = leaguedata.getPlayerWins(message.author.id)
     losses = leaguedata.getPlayerLosses(message.author.id)
 
     response += "You have " + str(wins) + " wins and " + str(losses) + " losses.\n\n"
 
-    response += "It is currently week " + str(leagueutils.getWeekNumber()) + "\n"
+    response += "It is currently week " + str(leagueutils.getWeekNumber()) + " (" + str(leagueutils.getDaysLeftInWeek()) + " day(s) left)\n"
     response += "The current set is " + leagueutils.getCurrentSet() + "\n"
 
     if leagueutils.getWeekNumber() >= leaguedata.DECK_SIZE_40_WEEK:
@@ -55,31 +82,24 @@ async def __getHelpResponse(message):
         DTKToOpen += lossToOpen
 
     if KTKToOpen > 0:
-        response += "You have " + str(KTKToOpen) + " KTK packs to open!\n"
+        response += "You have " + str(KTKToOpen) + " Iconic Masters packs to open!\n"
 
     if FRFToOpen > 0:
-        response += "You have " + str(FRFToOpen) + " FRF packs to open!\n"
+        response += "You have " + str(FRFToOpen) + " Masters 25 packs to open!\n"
 
     if DTKToOpen > 0:
-        response += "You have " + str(DTKToOpen) + " DTK packs to open!\n"
+        response += "You have " + str(DTKToOpen) + " Ultimate Masters packs to open!\n"
 
     if KTKToOpen + FRFToOpen + DTKToOpen == 0:
         response += "There are no packs you need to open at this time.\n"
     else:
         response += "You can open them using \"!league openpack\".\n The set opened will be chosen in order.\n Packs from losses will automatically move to the latest set when it releases.\n"
 
-    response += "\nOther commands:\n"
-    response += "\"!league help\" -- Get this message.\n"
-    response += "\"!league report @otherplayer Me/I/Them/They\" -- Report the result of a game. If you type \"me\" or \"I\" that means you (the person posting the message) won and vise versa.\n"
-    response += "\"!league openpack\" -- Opens a pack (if you have any to open). The contents of which are automatically added to your cardpool.\n"
-    response += "\"!league cardpool [@player]\" -- Bot will PM you a .txt with @player's cardpool. If no player is specified, it will send you your own card pool.\n"
-    response += "\"!league leaderboard\" -- See the current leaderboard."
-
-#    response += "KTKpacks = " + str(KTKopened) + " / " + str(KTKpacks) + "\n"
-#    response += "FRFpacks = " + str(FRFopened) + " / " + str(FRFpacks) + "\n"
-#    response += "DTKpacks = " + str(DTKopened) + " / " + str(DTKpacks) + "\n"
-#    response += "losspacks = " + str(lossopened) + " / " + str(losspacks) + "\n"
     return response
+
+async def handleStatus(message):
+    response = await __getStatusResponse(message)
+    await leagueutils.PMuser(message.author, response)
 
 async def handleJoin(message):
     if leaguedata.isUserInLeague(message.author.id):
@@ -124,7 +144,23 @@ async def handleOpenPack(message):
     p = Pack()
     p.generate(packSet)
 
-    response = message.author.name + " opened a pack of " + packSet + "!\n Its contents:\n\n"
+    response = message.author.name + " opened a pack of " + packSet + "!" + "\n\n"
+
+    KTKpacks, FRFpacks, DTKpacks, losspacks = leaguedata.getPlayerMaxPacks(message.author.id)
+    KTKopened, FRFopened, DTKopened, lossopened = leaguedata.getPlayerOpenedPacks(message.author.id)
+
+    KTKToOpen = KTKpacks - KTKopened
+    FRFToOpen = FRFpacks - FRFopened
+    DTKToOpen = DTKpacks - DTKopened
+
+    toOpen = KTKToOpen + FRFToOpen + DTKToOpen
+
+    if toOpen == 0:
+        response += "You have no more packs left to open. \n\n"
+    else:
+        response += "You have " + str(toOpen) + " packs left. \n\n"
+
+    response += "Its contents:\n\n"
 
     commonsData = p.cardData[0:p.commons]
     uncommonsData = p.cardData[p.commons:p.commons + p.uncommons]
@@ -139,12 +175,25 @@ async def handleOpenPack(message):
     uncommonsBody = "*Uncommons:*\n" + "\n".join(uncommonsData) + "\n\n"
     response += uncommonsBody
 
+#https://gatherer.wizards.com/Handlers/Image.ashx?multiverseid=368970&type=card
+
+    def getMIDLink(cardName, surrounder):
+            mId = leaguedata.getMultiverseId(cardName, packSet)
+            return (surrounder + cardName + surrounder + " - " + "https://gatherer.wizards.com/Handlers/Image.ashx?multiverseid=" + str(mId) + "&type=card" + "\n")
+
     if p.rares > 0:
-        rareBody = "__Rares:__\n" + "\n".join(rareData) + "\n\n"
+        print(p.rares)
+        rareBody = "__Rares:__\n"
+        for rare in rareData:
+            rareBody += getMIDLink(rare, "")
+        rareBody += "\n\n"
         response += rareBody
 
     if p.mythics > 0:
-        mythicBody = "__**Mythics!**__\n**" + "**\n**".join(mythicData) + "**\n\n"
+        mythicBody = "__**Mythics!**__\n"
+        for mythic in mythicData:
+            mythicBody += getMIDLink(mythic, "**")
+        mythicBody += "\n\n"
         response += mythicBody
 
     await leagueutils.sendMessage(message.channel, response)

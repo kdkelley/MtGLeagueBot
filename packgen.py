@@ -12,9 +12,9 @@ import math
 
 class Pack:
 
-    KAHNS_SETCODE = "KTK"
-    FATE_SETCODE = "FRF"
-    DRAGONS_SETCODE = "DTK"
+    KAHNS_SETCODE = "IMA"
+    FATE_SETCODE = "A25"
+    DRAGONS_SETCODE = "UMA"
 
     DB_PATH = "data/AllPrintings.sqlite"
 
@@ -109,7 +109,7 @@ class Pack:
     def __generateCards(self):
         seededCommons, seededUncommons = self.__getSeededCards()
 
-        commonData = self.__generateRarity(Pack.RARITY_COMMON, self.commons - len(seededCommons), seededCommons)        
+        commonData = self.__generateRarity(Pack.RARITY_COMMON, self.commons - len(seededCommons), seededCommons)
         self.cardData.extend(commonData)
         self.cardData.extend(seededCommons)
 
@@ -158,7 +158,7 @@ class Pack:
             where += "AND colors = \'" + colors + "\' "
         for name in excludedNames:
             where += "AND name != \'" + name.replace("'", r"''") + "\' "
-        where += "AND name != \'Plains\' AND name != \'Island\' AND name != \'Swamp\' AND name != \'Mountain\' AND name != \'Forest\' "
+        where += "AND name != \'Plains\' AND name != \'Island\' AND name != \'Swamp\' AND name != \'Mountain\' AND name != \'Forest\' AND name != \'Ice\' "
         order = "ORDER BY random() "
         limit = "LIMIT " + str(number)
 

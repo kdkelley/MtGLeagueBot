@@ -10,12 +10,12 @@ from packgen import Pack
 
 OWNER_ID = 260682887421100034
 DB_PATH = "data/LeagueData.sqlite"
-START_DATE = date(2020, 4, 11)
+START_DATE = date(2020, 7, 23)
 BASE_PACKS = 3
 LOSSES_PER_PACK = 3
 FRF_RELEASE_WEEK = 4
-DTK_RELEASE_WEEK = 6
-END_WEEK = 9
+DTK_RELEASE_WEEK = 7
+END_WEEK = 10
 MAX_IDENTICAL_GAMES_PER_DAY = 1
 MAX_IDENTICAL_GAMES_PER_WEEK = 3
 DECK_SIZE_40_WEEK = 4
@@ -45,7 +45,7 @@ timestamp DATETIME DEFAULT (DATETIME('now', 'localtime'))
 
 conn = None
 
-WIPE_TABLES_ON_START = False
+WIPE_TABLES_ON_START = True
 ON_START = True
 
 def isUserInLeague(id):
@@ -186,6 +186,27 @@ def getGamesThisWeek(player1ID, player2ID):
     for row in c.execute(command):
         times.append(row[0])
     return times
+
+#tries to get multiverseid by name and set code
+def getMultiverseId(name, setcode):
+    cardDB = sqlite3.connect(Pack.DB_PATH)
+    cardCursor = cardDB.cursor()
+    command = """
+    SELECT
+    multiverseId
+    FROM
+    cards
+    WHERE
+    (name = '""" + str(name.replace("'", "''")) + """'
+    AND
+    setcode = '""" + str(setcode) + """')
+    ORDER BY random() LIMIT 1"""
+    cardId = 0
+    for response in cardCursor.execute(command):
+        cardId = response[0]
+    cardCursor.close()
+    cardDB.close()
+    return cardId
 
 # if thisWeekOnly is true, get records only from this week
 # otherwise get all records

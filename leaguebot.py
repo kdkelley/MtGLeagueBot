@@ -35,6 +35,10 @@ async def on_message(message):
     if not message.content.startswith(COMMAND_PHRASE):
         return
 
+    if leagueutils.getWeekNumber() >= leaguedata.END_WEEK:
+        await leagueutils.sendMessage(message.channel, "The league is now over. Thanks for playing!")
+        return
+
     print(message.author, "(", message.author.id , ")", " -- ", message.content)
 
     command = message.content[len(COMMAND_PHRASE):].strip().lower().split()[0]
@@ -86,6 +90,8 @@ async def on_message(message):
         # value is 0 or 1
         # tells user about the changes (explains differences for mods)
         await commandhandlers.handleSetMod(message)
+    elif command == "status":
+        await commandhandlers.handleStatus(message)
     elif command == "debug-changestartdate":
         await commandhandlers.handleDebugChangeStartDate(message)
     elif command == "debug-discon-db" and message.author.id == leaguedata.OWNER_ID:
@@ -94,6 +100,6 @@ async def on_message(message):
         leaguedata.connect()
     else:
         print("Command unrecognized.")
-        leagueutils.sendMessage(message.channel, "Command not recognized.")
+        await leagueutils.sendMessage(message.channel, "Command not recognized.")
 
 client.run(TOKEN)

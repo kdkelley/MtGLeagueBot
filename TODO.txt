@@ -1,5 +1,5 @@
 # TODO:
-# make join actually useful and PM you all the commands
+# FIX SQL INJECT VULNERABILITY! (prepared statements)
 # add better mod tools in order to fix any problems that may come up
 # give mods a listing of all the commands they have in help, and give them better commands to reverse games and the like
 # have openpack tell you if/how many packs you have left to open
@@ -7,3 +7,9 @@
 # completely rework the way that command handling works to reduce code duplication and improve permissions / input parsing
 # redo the league data file to use only prepared statements
 # create a way to view listings of players, games, .etc
+# generate packs in bulk, then assign packs to players when they go to open them (much more efficient means of generating packs)
+# show how long is left in the week in the status menu
+# add status menu versus help menu (help menu does commands, status handles league status)
+# have help be more informative
+
+# check JSON reprint rarity change

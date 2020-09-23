@@ -11,6 +11,11 @@ def getWeekNumber():
     delta = date.today() - leaguedata.START_DATE
     return (math.floor(delta.days / 7) + 1)
 
+def getDaysLeftInWeek():
+    todayDay = date.today().weekday()
+    leagueDay = leaguedata.START_DATE.weekday()
+    return (leagueDay - ((todayDay - leagueDay) % leagueDay))
+
 def getCurrentSet():
     weekNumber = getWeekNumber()
     if weekNumber < leaguedata.FRF_RELEASE_WEEK:
