@@ -14,7 +14,7 @@ def getWeekNumber():
 def getDaysLeftInWeek():
     todayDay = date.today().weekday()
     leagueDay = leaguedata.START_DATE.weekday()
-    return (leagueDay - ((todayDay - leagueDay) % leagueDay))
+    return (leagueDay - ((todayDay - leagueDay) % 7))
 
 def getCurrentSet():
     weekNumber = getWeekNumber()
@@ -26,6 +26,7 @@ def getCurrentSet():
         return Pack.DRAGONS_SETCODE
 
 def getIDFromMention(mention):
+    print(mention)
     if not mention[-1] == ">" or not mention.startswith("<@!"):
         return -1
     else:

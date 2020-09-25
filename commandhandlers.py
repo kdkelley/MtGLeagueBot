@@ -182,7 +182,6 @@ async def handleOpenPack(message):
             return (surrounder + cardName + surrounder + " - " + "https://gatherer.wizards.com/Handlers/Image.ashx?multiverseid=" + str(mId) + "&type=card" + "\n")
 
     if p.rares > 0:
-        print(p.rares)
         rareBody = "__Rares:__\n"
         for rare in rareData:
             rareBody += getMIDLink(rare, "")
@@ -210,7 +209,7 @@ async def handleSetMod(message):
         await leagueutils.sendMessage(message.channel, response)
         return
     messageSplit = message.content.split()
-    targetID = int(messageSplit[2][3:-1])
+    targetID = leagueutils.getIDFromMention(messageSplit[2])
     modVal = int(messageSplit[3])
     leaguedata.setMod(targetID, modVal)
 
@@ -245,7 +244,7 @@ async def handleCardpool(message):
     if len(messageSplit) == 2:
         target = message.author.id
     else:
-        target = int(messageSplit[2][3:-1])
+        target = leagueutils.getIDFromMention(messageSplit[2])
 
     if not leaguedata.isUserInLeague(target):
         response = "The target is not a player in the league.\n"
@@ -278,7 +277,7 @@ async def handleReport(message):
 
     if len(messageSplit) < 4:
         response = "You are missing an argument. The game was not recorded.\n"
-        leagueutils.sendMessage(message.channel, response)
+        await leagueutils.sendMessage(message.channel, response)
         return
 
     winner = messageSplit[3].lower()
@@ -286,20 +285,20 @@ async def handleReport(message):
     loserID = None
     if winner == "i" or winner == "me":
         winnerID = message.author.id
-        loserID = messageSplit[2][3:-1]
+        loserID = leagueutils.getIDFromMention(messageSplit[2])
     elif winner == "they" or winner == "them":
-        winnerID = messageSplit[2][3:-1]
+        winnerID = leagueutils.getIDFromMention(messageSplit[2])
         loserID = message.author.id
     else:
         response = "Winner could not be identified.\nPlease use I/Me/Them/They to denote the winner.\n"
-        leagueutils.sendMessage(message.channel, response)
+        await leagueutils.sendMessage(message.channel, response)
         return
 
     if not leaguedata.isUserInLeague(message.author.id):
         response = "You are not in the league.\n"
         await leagueutils.sendMessage(message.channel, response)
         return
-    if not leaguedata.isUserInLeague(int(messageSplit[2][3:-1])):
+    if not leaguedata.isUserInLeague(leagueutils.getIDFromMention(messageSplit[2])):
         response = "Your opponent is not in the league.\n"
         await leagueutils.sendMessage(message.channel, response)
         return

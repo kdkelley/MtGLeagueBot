@@ -10,14 +10,14 @@ from packgen import Pack
 
 OWNER_ID = 260682887421100034
 DB_PATH = "data/LeagueData.sqlite"
-START_DATE = date(2020, 7, 23)
+START_DATE = date(2020, 9, 24)
 BASE_PACKS = 3
 LOSSES_PER_PACK = 3
 FRF_RELEASE_WEEK = 4
 DTK_RELEASE_WEEK = 7
 END_WEEK = 10
-MAX_IDENTICAL_GAMES_PER_DAY = 1
-MAX_IDENTICAL_GAMES_PER_WEEK = 3
+MAX_IDENTICAL_GAMES_PER_DAY = 999
+MAX_IDENTICAL_GAMES_PER_WEEK = 999
 DECK_SIZE_40_WEEK = 4
 
 SQL_CREATE_PLAYER_TABLE = """ CREATE TABLE IF NOT EXISTS players (
@@ -45,7 +45,7 @@ timestamp DATETIME DEFAULT (DATETIME('now', 'localtime'))
 
 conn = None
 
-WIPE_TABLES_ON_START = True
+WIPE_TABLES_ON_START = False
 ON_START = True
 
 def isUserInLeague(id):
@@ -65,7 +65,6 @@ def getPlayerWins(id):
 
 def getPlayerName(id):
     global c
-    print(id)
     for row in c.execute("SELECT name FROM players WHERE id=" + str(id) + " "):
         return row[0]
 
