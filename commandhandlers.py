@@ -261,7 +261,7 @@ async def handleCardpool(message):
     response = "Cardpool is attached.\n"
 
     cardpool_stream = io.BytesIO("\n".join(cardpool).encode())
-    filename = message.author.name + "_Cardpool.txt"
+    filename = leaguedata.getPlayerName(target) + "_Cardpool.txt"
     await leagueutils.sendMessage(message.author, response, file=cardpool_stream, filename=filename)
 
 async def handleReport(message):

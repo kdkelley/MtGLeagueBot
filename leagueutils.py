@@ -14,7 +14,11 @@ def getWeekNumber():
 def getDaysLeftInWeek():
     todayDay = date.today().weekday()
     leagueDay = leaguedata.START_DATE.weekday()
-    return (leagueDay - ((todayDay - leagueDay) % 7))
+    rawDay = (todayDay - leagueDay) % 7
+    if rawDay == 0:
+        return 7
+    else:
+        return rawDay
 
 def getCurrentSet():
     weekNumber = getWeekNumber()
