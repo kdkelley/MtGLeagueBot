@@ -1,15 +1,34 @@
-# TODO:
-# FIX SQL INJECT VULNERABILITY! (prepared statements)
-# add better mod tools in order to fix any problems that may come up
-# give mods a listing of all the commands they have in help, and give them better commands to reverse games and the like
-# have openpack tell you if/how many packs you have left to open
-# have help for individual commands
-# completely rework the way that command handling works to reduce code duplication and improve permissions / input parsing
-# redo the league data file to use only prepared statements
-# create a way to view listings of players, games, .etc
-# generate packs in bulk, then assign packs to players when they go to open them (much more efficient means of generating packs)
-# show how long is left in the week in the status menu
-# add status menu versus help menu (help menu does commands, status handles league status)
-# have help be more informative
+TODO:
+FIX SQL INJECT VULNERABILITY! (prepared statements)
+add better mod tools in order to fix any problems that may come up
+give mods a listing of all the commands they have in help, and give them better commands to reverse games and the like
+have openpack tell you if/how many packs you have left to open
+have help for individual commands
+completely rework the way that command handling works to reduce code duplication and improve permissions / input parsing
+redo the league data file to use only prepared statements
+create a way to view listings of players, games, .etc
+generate packs in bulk, then assign packs to players when they go to open them (much more efficient means of generating packs)
+show how long is left in the week in the status menu
+add status menu versus help menu (help menu does commands, status handles league status)
+have help be more informative
 
-# check JSON reprint rarity change
+check JSON reprint rarity change
+
+
+
+Feature Ideas:
+
+
+League Ideas:
+-Chaos League: every card is replaced with a card ever printed at that rarity
+   -might have to leave off older sets due to changes in rarity
+-Special packs: players have a chance of opening a pack that is special e.g. journey to nyx god packs
+-Seeded packs: packs will be seeded towards a particular archetype/color combo, mechanic, .etc
+-Picking Seeded packs: players are given a small slate of 3 or so packs, and are told only how they are seeded, players are then able to open one of the packs that slate. Slate resets every time a new pack is opened.
+-Ravnica mashup: all Ravnica sets are able to found in packs from day 1. Probably would have to be combined with picking seeded packs in one fashion or another (e.g. guilds for 3 weeks, mechanics for 3 weeks, .etc)\
+   -Innestrad
+   -Mirrodin
+   -Zendicar
+   -Dominaria (unlikely)
+   -Theros
+-Cube league: packs are "flat" (no rarity assignment) and picked off a cube list
