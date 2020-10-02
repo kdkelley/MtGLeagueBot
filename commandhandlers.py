@@ -281,6 +281,7 @@ async def handleReport(message):
         return
 
     winner = messageSplit[3].lower()
+    #print("winner text = ", winner)
     winnerID = None
     loserID = None
     if winner == "i" or winner == "me":
@@ -290,16 +291,27 @@ async def handleReport(message):
         winnerID = leagueutils.getIDFromMention(messageSplit[2])
         loserID = message.author.id
     else:
-        response = "Winner could not be identified.\nPlease use I/Me/Them/They to denote the winner.\n"
+        response = "Winner could not be identified.\nPlease use I/Me/Them/They to denote the winner.\nThe game was not recorded.\n"
         await leagueutils.sendMessage(message.channel, response)
         return
 
+    #print("message content = ", message.content)
+
+    #print("author id = ", message.author.id)
+    #print("opponent id = ", leagueutils.getIDFromMention(messageSplit[2]))
+
+    #print("winner id = ", winnerID)
+    #print("loser id = ", loserID)
+
+    #print("is author in league = ", leaguedata.isUserInLeague(message.author.id))
+    #print("is opponent in league = ", leaguedata.isUserInLeague(leagueutils.getIDFromMention(messageSplit[2])))
+
     if not leaguedata.isUserInLeague(message.author.id):
-        response = "You are not in the league.\n"
+        response = "You are not in the league.\nThe game was not recorded.\n"
         await leagueutils.sendMessage(message.channel, response)
         return
     if not leaguedata.isUserInLeague(leagueutils.getIDFromMention(messageSplit[2])):
-        response = "Your opponent is not in the league.\n"
+        response = "Your opponent is not in the league.\nThe game was not recorded.\n"
         await leagueutils.sendMessage(message.channel, response)
         return
 
@@ -307,12 +319,12 @@ async def handleReport(message):
     gamesThisWeek = leaguedata.getGamesThisWeek(winnerID, loserID)
 
     if len(gamesToday) >= leaguedata.MAX_IDENTICAL_GAMES_PER_DAY:
-        response = "Players have already played " + str(len(gamesToday)) + " time(s) today. (Limit: " + str(leaguedata.MAX_IDENTICAL_GAMES_PER_DAY) + ")\n"
+        response = "Players have already played " + str(len(gamesToday)) + " time(s) today. (Limit: " + str(leaguedata.MAX_IDENTICAL_GAMES_PER_DAY) + ")\nThe game was not recorded.\n"
         await leagueutils.sendMessage(message.channel, response)
         return
 
     if len(gamesThisWeek) >= leaguedata.MAX_IDENTICAL_GAMES_PER_WEEK:
-        response = "Players have already played " + str(len(gamesThisWeek)) + " time(s) this week. (Limit: " + str(leaguedata.MAX_IDENTICAL_GAMES_PER_WEEK) + ")\n"
+        response = "Players have already played " + str(len(gamesThisWeek)) + " time(s) this week. (Limit: " + str(leaguedata.MAX_IDENTICAL_GAMES_PER_WEEK) + ")\nThe game was not recorded.\n"
         await leagueutils.sendMessage(message.channel, response)
         return
 

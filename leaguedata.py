@@ -16,8 +16,8 @@ LOSSES_PER_PACK = 3
 FRF_RELEASE_WEEK = 4
 DTK_RELEASE_WEEK = 7
 END_WEEK = 10
-MAX_IDENTICAL_GAMES_PER_DAY = 999
-MAX_IDENTICAL_GAMES_PER_WEEK = 999
+MAX_IDENTICAL_GAMES_PER_DAY = 3
+MAX_IDENTICAL_GAMES_PER_WEEK = 9
 DECK_SIZE_40_WEEK = 4
 
 SQL_CREATE_PLAYER_TABLE = """ CREATE TABLE IF NOT EXISTS players (
@@ -50,7 +50,11 @@ ON_START = True
 
 def isUserInLeague(id):
     global c
+    #print("target id = ", id)
+    #for row in c.execute("SELECT name, id FROM players"):
+    #    print(row)
     for row in c.execute("SELECT COUNT(*) FROM players WHERE id=" + str(id) + " "):
+        #print(row[0] == 1)
         return row[0] == 1
 
 def getPlayerLosses(id):

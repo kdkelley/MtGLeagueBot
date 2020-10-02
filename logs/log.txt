@@ -1,0 +1,137 @@
+python3: can't open file 'MtGLeagueBot/leaguebot.py': [Errno 2] No such file or directory
+Database Connected!
+Done with initial database operations.
+DiscordMtGLeagueBot#1009 has connected to Discord!
+PlausibleScale#0412 ( 260682887421100034 )  --  !league openpack
+1
+PlausibleScale#0412 ( 260682887421100034 )  --  !league openpack
+1
+Database Connected!
+Kill old tables
+Refresh tables
+Done with initial database operations.
+DiscordMtGLeagueBot#1009 has connected to Discord!
+PlausibleScale#0412 ( 260682887421100034 )  --  !league help
+
+Database Connected!
+Done with initial database operations.
+DiscordMtGLeagueBot#1009 has connected to Discord!
+PlausibleScale#0412 ( 260682887421100034 )  --  !league help
+
+Magni#3886 ( 321375724424396801 )  --  !league openpack
+Magni#3886 ( 321375724424396801 )  --  !league join
+PlausibleScale#0412 ( 260682887421100034 )  --  !league join
+Magni#3886 ( 321375724424396801 )  --  !league openpack
+1
+Magni#3886 ( 321375724424396801 )  --  !league openpack
+1
+Magni#3886 ( 321375724424396801 )  --  !league openpack
+1
+Magni#3886 ( 321375724424396801 )  --  !league openpack
+XYZTheL'ast#2753 ( 142439663330656256 )  --  !league join
+XYZTheL'ast#2753 ( 142439663330656256 )  --  !league openpack
+1
+XYZTheL'ast#2753 ( 142439663330656256 )  --  !league openpack
+1
+XYZTheL'ast#2753 ( 142439663330656256 )  --  !league openpack
+1
+PlausibleScale#0412 ( 260682887421100034 )  --  !league openpack
+1
+PlausibleScale#0412 ( 260682887421100034 )  --  !league openpack
+1
+PlausibleScale#0412 ( 260682887421100034 )  --  !league openpack
+1
+XYZTheL'ast#2753 ( 142439663330656256 )  --  !league cardpool
+PlausibleScale#0412 ( 260682887421100034 )  --  !league status
+Magni#3886 ( 321375724424396801 )  --  !league cardpool
+chaotic lesbian#4280 ( 287326487407755265 )  --  !league status
+chaotic lesbian#4280 ( 287326487407755265 )  --  !league join
+chaotic lesbian#4280 ( 287326487407755265 )  --  !league status
+chaotic lesbian#4280 ( 287326487407755265 )  --  !league openpack
+chaotic lesbian#4280 ( 287326487407755265 )  --  !league openpack
+1
+chaotic lesbian#4280 ( 287326487407755265 )  --  !league openpack
+1
+chaotic lesbian#4280 ( 287326487407755265 )  --  !league openpack
+chaotic lesbian#4280 ( 287326487407755265 )  --  !league cardpool
+PlausibleScale#0412 ( 260682887421100034 )  --  !league cardpool
+Database Connected!
+Done with initial database operations.
+DiscordMtGLeagueBot#1009 has connected to Discord!
+PlausibleScale#0412 ( 260682887421100034 )  --  !league status
+Database Connected!
+Done with initial database operations.
+DiscordMtGLeagueBot#1009 has connected to Discord!
+PlausibleScale#0412 ( 260682887421100034 )  --  !league help
+
+PlausibleScale#0412 ( 260682887421100034 )  --  !league status
+PlausibleScale#0412 ( 260682887421100034 )  --  !league status
+Database Connected!
+Done with initial database operations.
+DiscordMtGLeagueBot#1009 has connected to Discord!
+PlausibleScale#0412 ( 260682887421100034 )  --  !league status
+PlausibleScale#0412 ( 260682887421100034 )  --  !league cardpool
+PlausibleScale#0412 ( 260682887421100034 )  --  !league status
+PlausibleScale#0412 ( 260682887421100034 )  --  !league cardpool
+PlausibleScale#0412 ( 260682887421100034 )  --  !league cardpool <@!321375724424396801>
+PlausibleScale#0412 ( 260682887421100034 )  --  !league help
+
+PlausibleScale#0412 ( 260682887421100034 )  --  !league cardpool <@!287326487407755265>
+PlausibleScale#0412 ( 260682887421100034 )  --  !league cardpool <@!321375724424396801> of huh please
+Database Connected!
+Done with initial database operations.
+DiscordMtGLeagueBot#1009 has connected to Discord!
+PlausibleScale#0412 ( 260682887421100034 )  --  !league cardpool <@!321375724424396801>
+Ignoring exception in on_message
+Traceback (most recent call last):
+  File "/home/ubuntu/.local/lib/python3.8/site-packages/discord/client.py", line 312, in _run_event
+    await coro(*args, **kwargs)
+  File "leaguebot.py", line 77, in on_message
+    await commandhandlers.handleCardpool(message)
+  File "/home/ubuntu/MtGLeague/MtGLeagueBot/commandhandlers.py", line 266, in handleCardpool
+    filename = target + "_Cardpool.txt"
+TypeError: unsupported operand type(s) for +: 'int' and 'str'
+Ignoring exception in on_message
+Traceback (most recent call last):
+  File "/home/ubuntu/.local/lib/python3.8/site-packages/discord/client.py", line 312, in _run_event
+    await coro(*args, **kwargs)
+  File "leaguebot.py", line 77, in on_message
+    await commandhandlers.handleCardpool(message)
+  File "/home/ubuntu/MtGLeague/MtGLeagueBot/commandhandlers.py", line 266, in handleCardpool
+    filename = target + "_Cardpool.txt"
+TypeError: unsupported operand type(s) for +: 'int' and 'str'
+Database Connected!
+Done with initial database operations.
+DiscordMtGLeagueBot#1009 has connected to Discord!
+PlausibleScale#0412 ( 260682887421100034 )  --  !league cardpool <@!321375724424396801>
+PlausibleScale#0412 ( 260682887421100034 )  --  !league cardpool
+PlausibleScale#0412 ( 260682887421100034 )  --  !league cardpool
+PlausibleScale#0412 ( 260682887421100034 )  --  !league cardpool <@!260682887421100034>
+/home/ubuntu/MtGLeague/MtGLeagueBot/commandhandlers.py:282: RuntimeWarning: coroutine 'sendMessage' was never awaited
+  leagueutils.sendMessage(message.channel, response)
+RuntimeWarning: Enable tracemalloc to get the object allocation traceback
+/home/ubuntu/MtGLeague/MtGLeagueBot/commandhandlers.py:296: RuntimeWarning: coroutine 'sendMessage' was never awaited
+  leagueutils.sendMessage(message.channel, response)
+RuntimeWarning: Enable tracemalloc to get the object allocation traceback
+Database Connected!
+Done with initial database operations.
+DiscordMtGLeagueBot#1009 has connected to Discord!
+PlausibleScale#0412 ( 260682887421100034 )  --  !league cardpool
+XYZTheL'ast#2753 ( 142439663330656256 )  --  !league report me
+XYZTheL'ast#2753 ( 142439663330656256 )  --  !league report <@!287326487407755265> me
+142439663330656256
+287326487407755265
+chaotic lesbian#4280 ( 287326487407755265 )  --  !league report me <@!142439663330656256>
+XYZTheL'ast#2753 ( 142439663330656256 )  --  !league report <@!287326487407755265> them
+chaotic lesbian#4280 ( 287326487407755265 )  --  !league report <@142439663330656256>  me
+Database Connected!
+Done with initial database operations.
+DiscordMtGLeagueBot#1009 has connected to Discord!
+PlausibleScale#0412 ( 260682887421100034 )  --  !league leaderboard
+Database Connected!
+Done with initial database operations.
+DiscordMtGLeagueBot#1009 has connected to Discord!
+PlausibleScale#0412 ( 260682887421100034 )  --  !league status
+XYZTheL'ast#2753 ( 142439663330656256 )  --  !league report <@287326487407755265>  them
+<@287326487407755265>
+<@287326487407755265>
