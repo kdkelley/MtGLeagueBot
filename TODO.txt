@@ -15,20 +15,31 @@ have help be more informative
 check JSON reprint rarity change
 
 
+create ways in discord to config bot
+rewrite bot to be more configurable
+make bot compatible with multiple guilds
+make better tools for handling bad match reporting, .etc
+
 
 Feature Ideas:
 
 
 League Ideas:
 -Chaos League: every card is replaced with a card ever printed at that rarity
-   -might have to leave off older sets due to changes in rarity
+   -might have to leave off older sets due to changes in rarity (modern+?)
 -Special packs: players have a chance of opening a pack that is special e.g. journey to nyx god packs
 -Seeded packs: packs will be seeded towards a particular archetype/color combo, mechanic, .etc
 -Picking Seeded packs: players are given a small slate of 3 or so packs, and are told only how they are seeded, players are then able to open one of the packs that slate. Slate resets every time a new pack is opened.
 -Ravnica mashup: all Ravnica sets are able to found in packs from day 1. Probably would have to be combined with picking seeded packs in one fashion or another (e.g. guilds for 3 weeks, mechanics for 3 weeks, .etc)\
-   -Innestrad
+   -Innistrad
    -Mirrodin
    -Zendicar
    -Dominaria (unlikely)
    -Theros
 -Cube league: packs are "flat" (no rarity assignment) and picked off a cube list
+   -monocolor
+   -weird & wacky
+   -peasant
+-Shitty Standard league: only shitty deviant standard decks
+-you may have X copies of this card in your deck League
+-brawl
