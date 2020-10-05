@@ -21,8 +21,6 @@ make bot compatible with multiple guilds
 make better tools for handling bad match reporting, .etc
 
 
-Feature Ideas:
-
 
 League Ideas:
 -Chaos League: every card is replaced with a card ever printed at that rarity
@@ -43,3 +41,4 @@ League Ideas:
 -Shitty Standard league: only shitty deviant standard decks
 -you may have X copies of this card in your deck League
 -brawl
+-custom cards
