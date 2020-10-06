@@ -3,6 +3,8 @@ import discord
 import os
 import sys
 
+import argparse
+
 import configparser
 
 import packgen
@@ -14,8 +16,16 @@ from dotenv import load_dotenv
 
 COMMAND_PHRASE = "!league"
 
+argparser = argparse.ArgumentParser(description="Discord MtG League Bot")
+argparser.add_argument("--devmode", help="launches bot in dev mode", action="store_true")
+args = argparser.parse_args()
+
 load_dotenv()
-TOKEN = os.getenv('DISCORD_TOKEN')
+
+if args.devmode:
+    TOKEN = os.getenv('DEV_TOKEN')
+else:
+    TOKEN = os.getenv('NORMAL_TOKEN')
 
 client = discord.Client()
 
