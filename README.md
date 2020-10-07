@@ -27,10 +27,10 @@ If you haven't already at this point you'll need to [create your application on 
 You then need to make a file in the root directory named .env, and have its contents look something like this:
 
 ```
-DISCORD_TOKEN="[APPLICATION TOKEN]"
+DISCORD_TOKEN="[BOT TOKEN]"
 ```
 
-Where [APPLICATION TOKEN] is the token for your discord application.
+Where [BOT TOKEN] is the token for the bot of your discord application.
 
 You will also need to download the .sqlite database for all of the MtG cards created by the MtGJSON project from [here](https://mtgjson.com/api/v5/AllPrintings.sqlite).
 

@@ -232,14 +232,14 @@ def getLeaderboard():
         leaderboard.append((row[0], row[1]))
     return leaderboard
 
-def connect():
+def connect(wipeTables=False, onStart=False):
     global conn
     global c
     try:
         conn = sqlite3.connect(DB_PATH, detect_types=sqlite3.PARSE_DECLTYPES | sqlite3.PARSE_COLNAMES)
         print("Database Connected!")
         c = conn.cursor()
-        if WIPE_TABLES_ON_START and ON_START:
+        if wipeTables and onStart:
             print("Kill old tables")
             for row in c.execute("DROP TABLE IF EXISTS players"):
                 print(row)
@@ -262,6 +262,3 @@ def connect():
 def kill():
     conn.commit()
     conn.close()
-
-connect()
-ON_START = False
