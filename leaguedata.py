@@ -351,21 +351,63 @@ def getMultiverseId(name, setcode):
 # otherwise get all records
 def getLeaderboard():
     global c
+#    command = """
+#    SELECT
+#    name, wins
+#    FROM
+#    (
+#        SELECT winner,
+#        COUNT(*)
+#        AS 'wins'
+#        FROM games
+#        GROUP BY winner
+#    )
+#    winners
+#    INNER JOIN
+#    players
+#    ON
+#    winners.winner=players.id
+#    ORDER BY
+#    wins DESC
+#    """
+
     command = """
     SELECT
-    name, wins
+    name, wins, losses
     FROM
-    (SELECT winner, COUNT(*) AS 'wins' FROM games GROUP BY winner) winners
+    (
+        SELECT winner,
+        COUNT(*)
+        AS 'wins'
+        FROM games
+        GROUP BY winner
+    )
+    winners
     INNER JOIN
     players
     ON
     winners.winner=players.id
+
+
+    INNER JOIN
+    (
+        SELECT loser,
+        COUNT(*)
+        AS 'losses'
+        FROM games
+        GROUP BY loser
+    )
+    losers
+    ON
+    losers.loser=players.id
+
     ORDER BY
     wins DESC
     """
     leaderboard = []
     for row in c.execute(command):
-        leaderboard.append((row[0], row[1]))
+        print(row)
+        leaderboard.append((row[0], row[1], row[2]))
     return leaderboard
 
 def connect(wipeTables=False, onStart=False):

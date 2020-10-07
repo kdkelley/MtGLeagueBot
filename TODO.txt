@@ -1,8 +1,4 @@
 TODO:
-allow restarting the bot with a new set of flags/args
-
-make leaderboard show losses
-
 --------- not carried over to league 2
 
 generate packs in bulk, then assign packs to players when they go to open them

@@ -46,7 +46,7 @@ class UserCog(commands.Cog):
         leaderboardData = leaguedata.getLeaderboard()
         response = "Leaderboard: \n"
         for datum in leaderboardData:
-            response += str(datum[0]) + " -- " + str(datum[1]) + "\n"
+            response += str(datum[0]) + ": " + str(datum[1]) + "-" + str(datum[2]) + "\n"
         response += "\n Users without any wins are not shown in the leaderboard.\n"
         await ctx.send(response)
 
