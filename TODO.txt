@@ -1,5 +1,4 @@
 TODO:
-make a way for players to change their internal name
 do help documentation for commands
    add handling for when checks are not met, or invalid commands / args
 allow restarting the bot with a new set of flags/args

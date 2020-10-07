@@ -121,7 +121,16 @@ def addPlayer(author):
     conn.commit()
     return
 
+def setPlayerName(id, name):
+    global c
+    global conn
+    name = name.replace("\'", "\'\'")
+    c.execute("UPDATE players SET name=? WHERE id=?", (name, id,))
+    conn.commit()
+    return
+
 def isMod(id):
+    global c
     if id == OWNER_ID:
         return True
     for row in c.execute("SELECT COUNT(*) FROM players WHERE id=? AND isMod=1", (id,)):
@@ -287,6 +296,7 @@ def swapWinner(gameID):
     """
     for row in c.execute(command, (gameID,)):
         print(row)
+    conn.commit()
     return
 
 def updatePackContents(packid, newcontents):
@@ -300,6 +310,7 @@ def updatePackContents(packid, newcontents):
     """
     for row in c.execute(command, (newcontents, packid)):
         print(row)
+    conn.commit()
     return
 
 #tries to get multiverseid by name and set code

@@ -200,6 +200,11 @@ class UserCog(commands.Cog):
         await ctx.send(response)
 
     @commands.command()
+    async def setname(self, ctx, name):
+        leaguedata.setPlayerName(ctx.author.id, name)
+        await ctx.send("Name updated.")
+
+    @commands.command()
     async def status(self, ctx):
         response = "Status:\n```"
 
