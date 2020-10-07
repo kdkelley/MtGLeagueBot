@@ -38,7 +38,9 @@ else:
 
 leaguedata.connect(args.wipe, True)
 
-bot = commands.Bot(command_prefix=COMMAND_PHRASE + " ")
+DESCRIPTION_TEXT = "A bot that manages a MtG league.\n\n Note: The card \'Fire\' stands for \'Fire \\\\ Ice\'."
+
+bot = commands.Bot(command_prefix=COMMAND_PHRASE + " ", description=DESCRIPTION_TEXT)
 
 @bot.event
 async def on_ready():
@@ -56,7 +58,7 @@ if DEV_MODE:
     EXTENSIONS.append("cog.dev.dev")
 
 @commands.command(aliases=['re'])
-@commands.check(lambda ctx: leaguedata.isMod(ctx.author.id))
+@commands.check(lambda ctx: leaguedata.isOwner(ctx.author.id))
 async def reloadExtensions(ctx):
     for extensionPath in EXTENSIONS:
         print("Reloading Extension: " + extensionPath)

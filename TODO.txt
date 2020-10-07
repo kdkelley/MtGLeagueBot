@@ -3,7 +3,11 @@ do help documentation for commands
    add handling for when checks are not met, or invalid commands / args
 allow restarting the bot with a new set of flags/args
 
+add a way to delete games and packs
+
 make leaderboard show losses
+
+--------- not carried over to league 2
 
 generate packs in bulk, then assign packs to players when they go to open them
    create much more wotc-like packs (based off of printed sheets)

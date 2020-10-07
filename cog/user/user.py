@@ -11,22 +11,14 @@ class UserCog(commands.Cog):
     async def cog_check(self, ctx):
         return leaguedata.isUserInLeague(ctx.author.id) and (not leagueutils.isPM(ctx.message))
 
-    @commands.command()
-    async def cardpool(self, ctx, *args):
+    @commands.command(brief="Shows you your cardpool or the cardpool of another user.", help="user, if included, must be a valid mention on Discord.\n If user is not included, will retrieve the cardpool of the user that sent the message")
+    async def cardpool(self, ctx, user=None):
 
         target = None
-        if len(args) == 0:
+        if user is None:
             target = ctx.author.id
-        elif len(args) == 1:
-            target = leagueutils.getIDFromMention(args[0])
         else:
-            response = "Cardpool Command:\n"
-            response += "Usage: "
-            response += "!league cardpool @user\n"
-            response += "@user, if included, must be a valid mention on Discord.\n"
-            response += "If @user is not included, will get the cardpool of the one who sent the message.\n"
-            await ctx.send(response)
-            return
+            target = leagueutils.getIDFromMention(user)
 
         if not leaguedata.isUserInLeague(target):
             response = "The target is not a player in the league.\n"
@@ -46,7 +38,7 @@ class UserCog(commands.Cog):
         filename = leaguedata.getPlayerName(target) + "_" + datetime.now().strftime("%m_%d_%Y_%H_%M_%S") + "_Cardpool.txt"
         await leagueutils.sendMessageByContext(ctx, response, file=cardpool_stream, filename=filename)
 
-    @commands.command()
+    @commands.command(brief="Shows you the current leaderboard.", help="Shows you the current leaderboard.")
     async def leaderboard(self, ctx):
         leaderboardData = leaguedata.getLeaderboard()
         response = "Leaderboard: \n"
@@ -55,7 +47,7 @@ class UserCog(commands.Cog):
         response += "\n Users without any wins are not shown in the leaderboard.\n"
         await ctx.send(response)
 
-    @commands.command(aliases=['op', "pack", "open"])
+    @commands.command(aliases=['op', "pack", "open"], brief="Opens a pack, should you have one to open.", help="Opens a pack. Begins with the first set out and then opens subsequent packs. Packs earned from losses will be opened last and will always be of the current set.")
     async def openpack(self, ctx):
         if leagueutils.isPM(ctx.message):
             response = "Please open packs in public, where we can all share the excitement!\n"
@@ -138,7 +130,7 @@ class UserCog(commands.Cog):
 
         await ctx.send(response)
 
-    @commands.command()
+    @commands.command(brief="Used to report games.", help="The 'opponent' argument is expected to be a discord mention.\nWinner should be either 'I' or 'me' if the person writing the message won, or 'they' or 'them' if the other player won.")
     async def report(self, ctx, opponent, winner):
         # gotta check two different restrictions
         # gotta check last game between these players, see if it was less than 18 hours ago
@@ -199,12 +191,12 @@ class UserCog(commands.Cog):
 
         await ctx.send(response)
 
-    @commands.command()
+    @commands.command(brief="Used to change your name on the leaderboard.", help="Used to change your internal name which is used on the leaderboard.")
     async def setname(self, ctx, name):
         leaguedata.setPlayerName(ctx.author.id, name)
         await ctx.send("Name updated.")
 
-    @commands.command()
+    @commands.command(brief="Get your personal wins/losses/packs.", help="Gets a variety of information about the league and your current wins/losses/packs, .etc.")
     async def status(self, ctx):
         response = "Status:\n```"
 

@@ -8,7 +8,7 @@ class JoinCog(commands.Cog):
     async def cog_check(self, ctx):
         return (not leaguedata.isUserInLeague(ctx.author.id)) and (not leagueutils.isPM(ctx.message))
 
-    @commands.command()
+    @commands.command(brief="Join the league.")
     async def join(self, ctx):
         if leaguedata.isUserInLeague(ctx.author.id):
             response = "You are already in the league.\n"
