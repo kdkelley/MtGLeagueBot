@@ -13,8 +13,6 @@ class UserCog(commands.Cog):
     @commands.command()
     async def cardpool(self, ctx, *args):
 
-        print(args)
-
         target = None
         if len(args) == 0:
             target = ctx.author.id
@@ -49,10 +47,14 @@ class UserCog(commands.Cog):
 
     @commands.command()
     async def leaderboard(self, ctx):
-        print("Test command")
-        await ctx.send('Hello {0.display_name}.'.format(ctx.author))
+        leaderboardData = leaguedata.getLeaderboard()
+        response = "Leaderboard: \n"
+        for datum in leaderboardData:
+            response += str(datum[0]) + " -- " + str(datum[1]) + "\n"
+        response += "\n Users without any wins are not shown in the leaderboard.\n"
+        await ctx.send(response)
 
-    @commands.command()
+    @commands.command(aliases=['op', "pack", "open"])
     async def openpack(self, ctx):
         if leagueutils.isPM(ctx.message):
             response = "Please open packs in public, where we can all share the excitement!\n"
@@ -136,9 +138,65 @@ class UserCog(commands.Cog):
         await ctx.send(response)
 
     @commands.command()
-    async def report(self, ctx):
-        print("Test command")
-        await ctx.send('Hello {0.display_name}.'.format(ctx.author))
+    async def report(self, ctx, opponent, winner):
+        # gotta check two different restrictions
+        # gotta check last game between these players, see if it was less than 18 hours ago
+        # gotta check total number of games between these players this week, see if it is less than 3
+        # if either criteria not met, gotta reject the game
+        # gotta inform winner of their new win total:
+        # weekly and global
+        # gotta infrom loser of their new lose total (and if they can open a new pack)
+        # for now intentionally not checking if the target is in the league or not, for debug
+
+        if not leaguedata.isUserInLeague(ctx.author.id):
+            response = "You are not in the league.\nThe game was not recorded.\n"
+            await ctx.send(response)
+            return
+        if not leaguedata.isUserInLeague(leagueutils.getIDFromMention(opponent)):
+            response = "Your opponent is not in the league.\nThe game was not recorded.\n"
+            await ctx.send(response)
+            return
+
+        winner = winner.lower()
+        winnerID = None
+        loserID = None
+        if winner == "i" or winner == "me":
+            winnerID = ctx.author.id
+            loserID = leagueutils.getIDFromMention(opponent)
+        elif winner == "they" or winner == "them":
+            winnerID = leagueutils.getIDFromMention(opponent)
+            loserID = ctx.author.id
+        else:
+            response = "Winner could not be identified.\nPlease use I/Me/Them/They to denote the winner.\nThe game was not recorded.\n"
+            await ctx.send(response)
+            return
+
+        gamesToday = leaguedata.getGamesToday(winnerID, loserID)
+        gamesThisWeek = leaguedata.getGamesThisWeek(winnerID, loserID)
+
+        if len(gamesToday) >= leaguedata.MAX_IDENTICAL_GAMES_PER_DAY:
+            response = "Players have already played " + str(len(gamesToday)) + " time(s) today. (Limit: " + str(leaguedata.MAX_IDENTICAL_GAMES_PER_DAY) + ")\nThe game was not recorded.\n"
+            await ctx.send(response)
+            return
+
+        if len(gamesThisWeek) >= leaguedata.MAX_IDENTICAL_GAMES_PER_WEEK:
+            response = "Players have already played " + str(len(gamesThisWeek)) + " time(s) this week. (Limit: " + str(leaguedata.MAX_IDENTICAL_GAMES_PER_WEEK) + ")\nThe game was not recorded.\n"
+            await ctx.send(response)
+            return
+
+        leaguedata.addGame(winnerID, loserID)
+        response = "Game successfully recorded.\n"
+
+        newWins = leaguedata.getPlayerWins(winnerID)
+        newLosses = leaguedata.getPlayerLosses(loserID)
+
+        response += leaguedata.getPlayerName(winnerID) + " now has " + str(newWins) + " wins.\n"
+        response += leaguedata.getPlayerName(loserID) + " now has " + str(newLosses) + " losses.\n"
+
+        if newLosses % leaguedata.LOSSES_PER_PACK == 0:
+            response += "They may open another pack using \"!league openpack\".\n"
+
+        await ctx.send(response)
 
     @commands.command()
     async def status(self, ctx):
@@ -198,12 +256,6 @@ class UserCog(commands.Cog):
         response += "```"
 
         await ctx.send(response)
-
-    @commands.command()
-    async def user(self, ctx):
-        print("Test command")
-        await ctx.send('Hello {0.display_name}.'.format(ctx.author))
-
 
 def setup(bot):
     bot.add_cog(UserCog(bot))

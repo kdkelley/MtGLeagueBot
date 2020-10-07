@@ -9,15 +9,11 @@ class ModCog(commands.Cog):
         return (leaguedata.isMod(ctx.author.id)) and (not leagueutils.isPM(ctx.message))
 
     @commands.command()
-    async def kill(self, ctx):
-        leaguedata.kill()
-        print(ctx.author.id, "killed the database.")
-        await ctx.send('Database has been killed.'.format(ctx.author))
-
-    @commands.command()
-    async def setmod(self, ctx):
-        print(ctx.author.id, "")
-        await ctx.send('Hello {0.display_name}.'.format(ctx.author))
+    async def setmod(self, ctx, user, modValue):
+        targetID = leagueutils.getIDFromMention(user)
+        modVal = int(modValue)
+        leaguedata.setMod(targetID, modVal)
+        await ctx.send("Mod status updated.");
 
 def setup(bot):
     bot.add_cog(ModCog(bot))

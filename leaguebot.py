@@ -48,13 +48,14 @@ async def on_ready():
 EXTENSIONS = [
 "cog.mod.mod",
 "cog.user.user",
-"cog.join.join"
+"cog.join.join",
+"cog.owner.owner"
 ]
 
 if DEV_MODE:
     EXTENSIONS.append("cog.dev.dev")
 
-@commands.command(aliases=['re', "reload"])
+@commands.command(aliases=['re'])
 @commands.check(lambda ctx: leaguedata.isMod(ctx.author.id))
 async def reloadExtensions(ctx):
     for extensionPath in EXTENSIONS:
