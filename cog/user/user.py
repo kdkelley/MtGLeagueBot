@@ -9,7 +9,10 @@ from packgen import Pack
 class UserCog(commands.Cog):
 
     async def cog_check(self, ctx):
-        return leaguedata.isUserInLeague(ctx.author.id) and (not leagueutils.isPM(ctx.message))
+        if leaguedata.isUserInLeague(ctx.author.id) and (not leagueutils.isPM(ctx.message)):
+            return True
+        await ctx.send("```Permissions check failed.\nYou likely either need to join the league or you sent this command in a DM.```")
+        return False
 
     @commands.command(brief="Shows you your cardpool or the cardpool of another user.", help="user, if included, must be a valid mention on Discord.\n If user is not included, will retrieve the cardpool of the user that sent the message")
     async def cardpool(self, ctx, user=None):

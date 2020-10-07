@@ -1,5 +1,4 @@
 TODO:
-add handling for when checks are not met, or invalid commands / args
 allow restarting the bot with a new set of flags/args
 
 make leaderboard show losses
