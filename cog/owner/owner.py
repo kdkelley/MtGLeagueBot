@@ -20,7 +20,7 @@ class OwnerCog(commands.Cog):
         repo.remotes.origin.pull()
 
     @commands.command()
-    async def relaunchbot(self, ctx):
+    async def restartbot(self, ctx):
         print(sys.argv)
         os.execv(sys.executable, ['python'] + sys.argv)
 
