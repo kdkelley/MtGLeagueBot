@@ -50,11 +50,7 @@ ON_START = True
 
 def isUserInLeague(id):
     global c
-    #print("target id = ", id)
-    #for row in c.execute("SELECT name, id FROM players"):
-    #    print(row)
     for row in c.execute('SELECT COUNT(*) FROM players WHERE id=?', (id,)):
-        #print(row[0] == 1)
         return row[0] == 1
 
 def getPlayerLosses(id):
@@ -102,7 +98,6 @@ def playerOpenedPack(id, p, isLossPack):
     global conn
     cardContentString = "|".join(p.cardData)
     cardContentString = cardContentString.replace("\'", "\'\'")
-#    command = "INSERT INTO packs (playerid, setcode, isLoss, contents) VALUES (" + str(id) + ", \'" + p.set + "\', " + str(int(isLossPack)) + ", \'" + cardContentString + "\')"
     command = "INSERT INTO packs (playerid, setcode, isLoss, contents) VALUES (?, ?, ?, ?)"
     c.execute(command, (id, p.set, int(isLossPack), cardContentString,))
     conn.commit()
@@ -122,7 +117,6 @@ def addPlayer(author):
     global c
     global conn
     playerName = author.name.replace("\'", "\'\'")
-#    c.execute("INSERT INTO players (id, name) VALUES (" + str(author.id) + ", \'" + playerName + "\')")
     c.execute("INSERT INTO players (id, name) VALUES (?, ?)", (author.id, playerName,))
     conn.commit()
     return
@@ -136,14 +130,12 @@ def isMod(id):
 def setMod(id, value):
     global c
     global conn
-#    c.execute("UPDATE players SET isMod=" + str(value) + " WHERE id=" + str(id))
     c.execute("UPDATE players SET isMod=? WHERE id=?", (value, id,))
     conn.commit()
 
 def addGame(winnerID, loserID):
     global c
     global conn
-#    c.execute("INSERT INTO games (winner, loser) VALUES (" + str(winnerID) + ", " + str(loserID) + ")")
     c.execute("INSERT INTO games (winner, loser) VALUES (?, ?)", (winnerID, loserID,))
     conn.commit()
 
@@ -151,21 +143,6 @@ def isOwner(id):
     return id == OWNER_ID
 
 def getGamesToday(player1ID, player2ID):
-#    command = """
-#    SELECT
-#    timestamp
-#    FROM
-#    games
-#    WHERE
-#    (winner = """ + str(player1ID) + """
-#    OR
-#    loser = """ + str(player1ID) + """)
-#    AND
-#    (winner = """ + str(player2ID) + """
-#    OR
-#    loser = """ + str(player2ID) + """)"""
-#    command += """ AND timestamp >= DATETIME('now', 'localtime', 'start of day')"""
-
     command = """
     SELECT
     timestamp
@@ -190,22 +167,6 @@ def getGamesThisWeek(player1ID, player2ID):
     startWeekday = START_DATE.weekday()
     todayWeekday = date.today().weekday()
     daysBack = -1 * ((todayWeekday + (7 - startWeekday)) % 7)
-
-#    command = """
-#    SELECT
-#    timestamp
-#    FROM
-#    games
-#    WHERE
-#    (winner = """ + str(player1ID) + """
-#    OR
-#    loser = """ + str(player1ID) + """)
-#    AND
-#    (winner = """ + str(player2ID) + """
-#    OR
-#    loser = """ + str(player2ID) + """)"""
-#    command += """ AND timestamp >= DATETIME('now', 'localtime', 'start of day', '""" + str(daysBack) + """ day')"""
-
     command = """
     SELECT
     timestamp
@@ -225,20 +186,102 @@ def getGamesThisWeek(player1ID, player2ID):
         times.append(row[0])
     return times
 
+class GameData:
+    def __init__(self, id, winnerID, loserID, timestamp):
+        self.id = id
+        self.winnerID = winnerID
+        self.loserID = loserID
+        self.timestamp = timestamp
+
+def getLastGames(numGames, player):
+    command = """
+    SELECT
+    *
+    FROM
+    games
+    WHERE
+    (winner LIKE ?
+    OR
+    loser LIKE ?)
+    ORDER BY
+    timestamp DESC
+    LIMIT ?
+    """
+    gameData = []
+    for row in c.execute(command, (player, player, numGames,)):
+        gameData.append(GameData(row[0], row[1], row[2], row[3]))
+    return gameData
+
+class PackData():
+    def __init__(self, id, playerid, set, isLossPack, contents, timestamp):
+        self.id = id
+        self.playerid = playerid
+        self.set = set
+        self.isLossPack = isLossPack
+        self.contents = contents
+        self.timestamp = timestamp
+
+def getLastPacks(numPacks, player):
+    command = """
+    SELECT
+    *
+    FROM
+    packs
+    WHERE
+    playerid LIKE ?
+    ORDER BY
+    packid DESC
+    LIMIT ?
+    """
+    packData = []
+    for row in c.execute(command, (player, numPacks,)):
+        packData.append(PackData(row[0], row[1], row[2], row[3], row[4], row[5]))
+    return packData
+
+def getGameById(gameID):
+    command = """
+    SELECT
+    *
+    FROM
+    games
+    WHERE
+    gameID=?
+    LIMIT 1
+    """
+    for row in c.execute(command, (gameID,)):
+        return GameData(row[0], row[1], row[2], row[3])
+
+def swapWinner(gameID):
+    command = """
+    UPDATE
+    games
+    SET
+    winner = loser,
+    loser = winner
+    WHERE
+    gameID=?
+    """
+    for row in c.execute(command, (gameID,)):
+        print(row)
+    return
+
+def updatePackContents(packid, newcontents):
+    command = """
+    UPDATE
+    packs
+    SET
+    contents = ?
+    WHERE
+    packid = ?
+    """
+    for row in c.execute(command, (newcontents, packid)):
+        print(row)
+    return
+
 #tries to get multiverseid by name and set code
 def getMultiverseId(name, setcode):
     cardDB = sqlite3.connect(Pack.DB_PATH)
     cardCursor = cardDB.cursor()
-#    command = """
-#    SELECT
-#    multiverseId
-#    FROM
-#    cards
-#    WHERE
-#    (name = '""" + str(name.replace("'", "''")) + """'
-#    AND
-#    setcode = '""" + str(setcode) + """')
-#    ORDER BY random() LIMIT 1"""
     command = """
     SELECT
     multiverseId
@@ -248,7 +291,9 @@ def getMultiverseId(name, setcode):
     (name = ?
     AND
     setcode = ?)
-    ORDER BY random() LIMIT 1"""
+    ORDER BY
+    random()
+    LIMIT 1"""
     cardId = 0
     for response in cardCursor.execute(command, (name.replace("'", "''"),setcode,)):
         cardId = response[0]

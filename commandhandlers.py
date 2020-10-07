@@ -1,3 +1,4 @@
+'''
 import io
 
 from datetime import date
@@ -349,3 +350,4 @@ async def handleLeaderboard(message):
         response += str(datum[0]) + " -- " + str(datum[1]) + "\n"
     response += "\n Users without any wins are not shown in the leaderboard.\n"
     await leagueutils.sendMessage(message.channel, response)
+'''

@@ -1,4 +1,5 @@
 from discord.ext import commands
+from datetime import datetime
 import io
 
 import leaguedata
@@ -42,7 +43,7 @@ class UserCog(commands.Cog):
         response = "Cardpool is attached.\n"
 
         cardpool_stream = io.BytesIO("\n".join(cardpool).encode())
-        filename = leaguedata.getPlayerName(target) + "_Cardpool.txt"
+        filename = leaguedata.getPlayerName(target) + "_" + datetime.now().strftime("%m_%d_%Y_%H_%M_%S") + "_Cardpool.txt"
         await leagueutils.sendMessageByContext(ctx, response, file=cardpool_stream, filename=filename)
 
     @commands.command()

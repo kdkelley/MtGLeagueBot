@@ -19,7 +19,7 @@ class OwnerCog(commands.Cog):
         repo = git.Repo(".")
         repo.remotes.origin.pull()
 
-    @commands.command()
+    @commands.command(aliases=["rb", "restart", "reboot"])
     async def restartbot(self, ctx):
         print(sys.argv)
         os.execv(sys.executable, ['python'] + sys.argv)

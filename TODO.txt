@@ -1,16 +1,12 @@
 TODO:
-FIX SQL INJECT VULNERABILITY! (prepared statements)
-add better mod tools in order to fix any problems that may come up
-have help for individual commands
+do help documentation for commands
 create a way to view listings of players, games, .etc
 generate packs in bulk, then assign packs to players when they go to open them (much more efficient means of generating packs)
    -need to figure out the math on this
-show how long is left in the week in the status menu
-add status menu versus help menu (help menu does commands, status handles league status)
-have help be more informative
-check JSON reprint rarity change
-create ways in discord to config bot
-rewrite bot to be more configurable
+add handling for when checks are not met, or invalid commands / args
+check JSON reprint rarity change and other stuff
+create ways in discord to config leagues
+rewrite bot to allow more configurable leagues
 make bot compatible with multiple guilds / multiple leagues
 allow restarting the bot with a new set of flags/args
 
