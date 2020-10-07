@@ -116,7 +116,7 @@ def getCardpool(id):
 def addPlayer(author):
     global c
     global conn
-    playerName = author.name.replace("\'", "\'\'")
+    playerName = author.display_name.replace("\'", "\'\'")
     c.execute("INSERT INTO players (id, name) VALUES (?, ?)", (author.id, playerName,))
     conn.commit()
     return
@@ -237,6 +237,30 @@ def getLastPacks(numPacks, player):
     for row in c.execute(command, (player, numPacks,)):
         packData.append(PackData(row[0], row[1], row[2], row[3], row[4], row[5]))
     return packData
+
+class PlayerData():
+    def __init__(self, id, name, isMod, timestamp):
+        self.id = id
+        self.name = name
+        self.isMod = isMod
+        self.timestamp = timestamp
+
+def getPlayers(numPlayers, pattern):
+    command = """
+    SELECT
+    *
+    FROM
+    players
+    WHERE
+    name LIKE ?
+    ORDER BY
+    timestamp DESC
+    LIMIT ?
+    """
+    playerdata = []
+    for row in c.execute(command, (pattern, numPlayers,)):
+        playerdata.append(PlayerData(row[0], row[1], row[2], row[3]))
+    return playerdata
 
 def getGameById(gameID):
     command = """

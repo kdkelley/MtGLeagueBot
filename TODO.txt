@@ -1,14 +1,28 @@
 TODO:
+make a way for players to change their internal name
 do help documentation for commands
-create a way to view listings of players, games, .etc
-generate packs in bulk, then assign packs to players when they go to open them (much more efficient means of generating packs)
-   -need to figure out the math on this
-add handling for when checks are not met, or invalid commands / args
-check JSON reprint rarity change and other stuff
-create ways in discord to config leagues
-rewrite bot to allow more configurable leagues
-make bot compatible with multiple guilds / multiple leagues
+   add handling for when checks are not met, or invalid commands / args
 allow restarting the bot with a new set of flags/args
+
+make leaderboard show losses
+
+generate packs in bulk, then assign packs to players when they go to open them
+   create much more wotc-like packs (based off of printed sheets)
+
+rewrite bot to allow more configurable leagues
+
+fix split and other cards in the db
+check JSON reprint rarity change and other stuff
+
+create ways in discord to config leagues
+make bot compatible with multiple guilds / multiple leagues
+
+
+
+
+
+
+
 
 League Ideas:
 -Chaos League: every card is replaced with a card ever printed at that rarity

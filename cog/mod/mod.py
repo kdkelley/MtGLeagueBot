@@ -39,7 +39,10 @@ class ModCog(commands.Cog):
         if not player == "%":
             player = leagueutils.getIDFromMention(player)
         packData = leaguedata.getLastPacks(number, player)
-        response = "Packs:\n id | player | set | timestamp | contents\n"
+        response = "Packs:\n id | player | set | timestamp"
+        if not showContents == 0:
+            response += " | contents"
+        response += "\n"
         if len(packData) == 0:
             await ctx.send("No packs opened yet.")
             return
@@ -47,6 +50,15 @@ class ModCog(commands.Cog):
             response += str(pack.id) + " | " + leaguedata.getPlayerName(pack.playerid) + " | " + (pack.set) + " | " + pack.timestamp
             if not showContents == 0:
                 response += " | " + pack.contents
+            response += "\n"
+        await ctx.send(response)
+
+    @list.command()
+    async def players(self, ctx, player="%", number=10):
+        playerData = leaguedata.getPlayers(number, player)
+        response = "Players:\n id | name | isMod | time joined\n"
+        for player in playerData:
+            response += str(player.id) + " | " + player.name + " | " + str(player.isMod) + " | " + player.timestamp
             response += "\n"
         await ctx.send(response)
 
