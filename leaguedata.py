@@ -53,23 +53,23 @@ def isUserInLeague(id):
     #print("target id = ", id)
     #for row in c.execute("SELECT name, id FROM players"):
     #    print(row)
-    for row in c.execute("SELECT COUNT(*) FROM players WHERE id=" + str(id) + " "):
+    for row in c.execute('SELECT COUNT(*) FROM players WHERE id=?', (id,)):
         #print(row[0] == 1)
         return row[0] == 1
 
 def getPlayerLosses(id):
     global c
-    for row in c.execute("SELECT COUNT(*) FROM games WHERE loser=" + str(id) + " "):
+    for row in c.execute("SELECT COUNT(*) FROM games WHERE loser=?", (id,)):
         return row[0]
 
 def getPlayerWins(id):
     global c
-    for row in c.execute("SELECT COUNT(*) FROM games WHERE winner=" + str(id) + " "):
+    for row in c.execute("SELECT COUNT(*) FROM games WHERE winner=?", (id,)):
         return row[0]
 
 def getPlayerName(id):
     global c
-    for row in c.execute("SELECT name FROM players WHERE id=" + str(id) + " "):
+    for row in c.execute("SELECT name FROM players WHERE id=?", (id,)):
         return row[0]
 
 def getPlayerMaxPacks(id):
@@ -87,13 +87,13 @@ def getPlayerOpenedPacks(id):
     FRFopened = None
     DTKopened = None
     LOSSopened = None
-    for row in c.execute("SELECT COUNT(*) FROM packs WHERE playerid=" + str(id) + " AND setcode=\'" + Pack.KAHNS_SETCODE + "\' AND isLoss=0"):
+    for row in c.execute("SELECT COUNT(*) FROM packs WHERE playerid=? AND setcode=? AND isLoss=0", (id, Pack.KAHNS_SETCODE,)):
         KTKopened = row[0]
-    for row in c.execute("SELECT COUNT(*) FROM packs WHERE playerid=" + str(id) + " AND setcode=\'" + Pack.FATE_SETCODE + "\' AND isLoss=0"):
+    for row in c.execute("SELECT COUNT(*) FROM packs WHERE playerid=? AND setcode=? AND isLoss=0", (id, Pack.FATE_SETCODE,)):
         FRFopened = row[0]
-    for row in c.execute("SELECT COUNT(*) FROM packs WHERE playerid=" + str(id) + " AND setcode=\'" + Pack.DRAGONS_SETCODE + "\' AND isLoss=0"):
+    for row in c.execute("SELECT COUNT(*) FROM packs WHERE playerid=? AND setcode=? AND isLoss=0", (id, Pack.DRAGONS_SETCODE,)):
         DTKopened = row[0]
-    for row in c.execute("SELECT COUNT(*) FROM packs WHERE playerid=" + str(id) + " AND isLoss=1"):
+    for row in c.execute("SELECT COUNT(*) FROM packs WHERE playerid=? AND isLoss=1", (id,)):
         LOSSopened = row[0]
     return KTKopened, FRFopened, DTKopened, LOSSopened
 
@@ -102,16 +102,17 @@ def playerOpenedPack(id, p, isLossPack):
     global conn
     cardContentString = "|".join(p.cardData)
     cardContentString = cardContentString.replace("\'", "\'\'")
-    command = "INSERT INTO packs (playerid, setcode, isLoss, contents) VALUES (" + str(id) + ", \'" + p.set + "\', " + str(int(isLossPack)) + ", \'" + cardContentString + "\')"
-    c.execute(command)
+#    command = "INSERT INTO packs (playerid, setcode, isLoss, contents) VALUES (" + str(id) + ", \'" + p.set + "\', " + str(int(isLossPack)) + ", \'" + cardContentString + "\')"
+    command = "INSERT INTO packs (playerid, setcode, isLoss, contents) VALUES (?, ?, ?, ?)"
+    c.execute(command, (id, p.set, int(isLossPack), cardContentString,))
     conn.commit()
 
 def getCardpool(id):
     global c
     global conn
     cardpool = []
-    command = "SELECT contents FROM packs WHERE playerid=" + str(id)
-    for row in c.execute(command):
+    command = "SELECT contents FROM packs WHERE playerid=?"
+    for row in c.execute(command, (id,)):
         cardcontent = row[0]
         cardcontent = cardcontent.split("|")
         cardpool.extend(cardcontent)
@@ -121,48 +122,67 @@ def addPlayer(author):
     global c
     global conn
     playerName = author.name.replace("\'", "\'\'")
-    c.execute("INSERT INTO players (id, name) VALUES (" + str(author.id) + ", \'" + playerName + "\')")
+#    c.execute("INSERT INTO players (id, name) VALUES (" + str(author.id) + ", \'" + playerName + "\')")
+    c.execute("INSERT INTO players (id, name) VALUES (?, ?)", (author.id, playerName,))
     conn.commit()
     return
 
 def isMod(id):
     if id == OWNER_ID:
         return True
-    for row in c.execute("SELECT COUNT(*) FROM players WHERE id=" + str(id) + " AND isMod=1"):
+    for row in c.execute("SELECT COUNT(*) FROM players WHERE id=? AND isMod=1", (id,)):
         return row[0] == 1
 
 def setMod(id, value):
     global c
     global conn
-    c.execute("UPDATE players SET isMod=" + str(value) + " WHERE id=" + str(id))
+#    c.execute("UPDATE players SET isMod=" + str(value) + " WHERE id=" + str(id))
+    c.execute("UPDATE players SET isMod=? WHERE id=?", (value, id,))
     conn.commit()
 
 def addGame(winnerID, loserID):
     global c
     global conn
-    c.execute("INSERT INTO games (winner, loser) VALUES (" + str(winnerID) + ", " + str(loserID) + ")")
+#    c.execute("INSERT INTO games (winner, loser) VALUES (" + str(winnerID) + ", " + str(loserID) + ")")
+    c.execute("INSERT INTO games (winner, loser) VALUES (?, ?)", (winnerID, loserID,))
     conn.commit()
 
 def isOwner(id):
     return id == OWNER_ID
 
 def getGamesToday(player1ID, player2ID):
+#    command = """
+#    SELECT
+#    timestamp
+#    FROM
+#    games
+#    WHERE
+#    (winner = """ + str(player1ID) + """
+#    OR
+#    loser = """ + str(player1ID) + """)
+#    AND
+#    (winner = """ + str(player2ID) + """
+#    OR
+#    loser = """ + str(player2ID) + """)"""
+#    command += """ AND timestamp >= DATETIME('now', 'localtime', 'start of day')"""
+
     command = """
     SELECT
     timestamp
     FROM
     games
     WHERE
-    (winner = """ + str(player1ID) + """
+    (winner = ?
     OR
-    loser = """ + str(player1ID) + """)
+    loser = ?)
     AND
-    (winner = """ + str(player2ID) + """
+    (winner = ?
     OR
-    loser = """ + str(player2ID) + """)"""
-    command += """ AND timestamp >= DATETIME('now', 'localtime', 'start of day')"""
+    loser = ?)
+    AND timestamp >= DATETIME('now', 'localtime', 'start of day')
+    """
     times = []
-    for row in c.execute(command):
+    for row in c.execute(command, (player1ID, player1ID, player2ID, player2ID,)):
         times.append(row[0])
     return times
 
@@ -171,22 +191,37 @@ def getGamesThisWeek(player1ID, player2ID):
     todayWeekday = date.today().weekday()
     daysBack = -1 * ((todayWeekday + (7 - startWeekday)) % 7)
 
+#    command = """
+#    SELECT
+#    timestamp
+#    FROM
+#    games
+#    WHERE
+#    (winner = """ + str(player1ID) + """
+#    OR
+#    loser = """ + str(player1ID) + """)
+#    AND
+#    (winner = """ + str(player2ID) + """
+#    OR
+#    loser = """ + str(player2ID) + """)"""
+#    command += """ AND timestamp >= DATETIME('now', 'localtime', 'start of day', '""" + str(daysBack) + """ day')"""
+
     command = """
     SELECT
     timestamp
     FROM
     games
     WHERE
-    (winner = """ + str(player1ID) + """
+    (winner = ?
     OR
-    loser = """ + str(player1ID) + """)
+    loser = ?)
     AND
-    (winner = """ + str(player2ID) + """
+    (winner = ?
     OR
-    loser = """ + str(player2ID) + """)"""
-    command += """ AND timestamp >= DATETIME('now', 'localtime', 'start of day', '""" + str(daysBack) + """ day')"""
+    loser = ?)
+    AND timestamp >= DATETIME('now', 'localtime', 'start of day', ?)"""
     times = []
-    for row in c.execute(command):
+    for row in c.execute(command, (player1ID, player1ID, player2ID, player2ID, str(daysBack) + " day")):
         times.append(row[0])
     return times
 
@@ -194,18 +229,28 @@ def getGamesThisWeek(player1ID, player2ID):
 def getMultiverseId(name, setcode):
     cardDB = sqlite3.connect(Pack.DB_PATH)
     cardCursor = cardDB.cursor()
+#    command = """
+#    SELECT
+#    multiverseId
+#    FROM
+#    cards
+#    WHERE
+#    (name = '""" + str(name.replace("'", "''")) + """'
+#    AND
+#    setcode = '""" + str(setcode) + """')
+#    ORDER BY random() LIMIT 1"""
     command = """
     SELECT
     multiverseId
     FROM
     cards
     WHERE
-    (name = '""" + str(name.replace("'", "''")) + """'
+    (name = ?
     AND
-    setcode = '""" + str(setcode) + """')
+    setcode = ?)
     ORDER BY random() LIMIT 1"""
     cardId = 0
-    for response in cardCursor.execute(command):
+    for response in cardCursor.execute(command, (name.replace("'", "''"),setcode,)):
         cardId = response[0]
     cardCursor.close()
     cardDB.close()
@@ -225,7 +270,7 @@ def getLeaderboard():
     ON
     winners.winner=players.id
     ORDER BY
-    wins
+    wins DESC
     """
     leaderboard = []
     for row in c.execute(command):

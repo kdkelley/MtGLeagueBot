@@ -12,6 +12,7 @@ check JSON reprint rarity change
 create ways in discord to config bot
 rewrite bot to be more configurable
 make bot compatible with multiple guilds / multiple leagues
+allow restarting the bot with a new set of flags/args
 
 League Ideas:
 -Chaos League: every card is replaced with a card ever printed at that rarity
