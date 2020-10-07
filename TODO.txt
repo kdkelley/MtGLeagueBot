@@ -1,9 +1,6 @@
 TODO:
-do help documentation for commands
-   add handling for when checks are not met, or invalid commands / args
+add handling for when checks are not met, or invalid commands / args
 allow restarting the bot with a new set of flags/args
-
-add a way to delete games and packs
 
 make leaderboard show losses
 

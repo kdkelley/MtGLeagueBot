@@ -74,5 +74,20 @@ class ModCog(commands.Cog):
         leaguedata.updatePackContents(packid, newcontents)
         await ctx.send("Pack contents updated.")
 
+    @commands.group(brief="Delete a game or pack.")
+    async def delete(self, ctx):
+        if ctx.invoked_subcommand is None:
+            await ctx.send("Invalid subcommand")
+
+    @delete.command(brief="Delete a game by id.", help="You should find a valid gameID using list games first before using this command.\n **THERE IS NO UNDO.**")
+    async def game(self, ctx, gameID):
+        leaguedata.deleteGame(gameID)
+        await ctx.send("Game deleted.")
+
+    @delete.command(brief="Delete a pack by id.", help="You should find a valid packID using list packs before using this command.\n **THERE IS NO UNDO.**")
+    async def pack(self, ctx, packID):
+        leaguedata.deletePack(packID)
+        await ctx.send("Pack deleted.")
+
 def setup(bot):
     bot.add_cog(ModCog(bot))

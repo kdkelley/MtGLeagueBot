@@ -10,7 +10,6 @@ import configparser
 import packgen
 import leagueutils
 import leaguedata
-import commandhandlers
 
 from dotenv import load_dotenv
 load_dotenv()

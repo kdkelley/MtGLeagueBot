@@ -148,6 +148,17 @@ def addGame(winnerID, loserID):
     c.execute("INSERT INTO games (winner, loser) VALUES (?, ?)", (winnerID, loserID,))
     conn.commit()
 
+def deleteGame(gameID):
+    global c
+    global conn
+    c.execute("DELETE FROM games WHERE gameID=?", (gameID,))
+    conn.commit()
+
+def deletePack(packID):
+    global c
+    global conn
+    c.execute("DELETE FROM packs WHERE packid=?", (packID,))
+
 def isOwner(id):
     return id == OWNER_ID
 
