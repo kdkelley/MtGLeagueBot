@@ -341,7 +341,7 @@ def getMultiverseId(name, setcode):
     random()
     LIMIT 1"""
     cardId = 0
-    for response in cardCursor.execute(command, (name.replace("'", "''"),setcode,)):
+    for response in cardCursor.execute(command, (name, setcode,)):
         cardId = response[0]
     cardCursor.close()
     cardDB.close()
