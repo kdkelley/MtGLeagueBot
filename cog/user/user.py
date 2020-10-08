@@ -57,8 +57,10 @@ class UserCog(commands.Cog):
         KTKpacks, FRFpacks, DTKpacks, losspacks = leaguedata.getPlayerMaxPacks(ctx.author.id)
         KTKopened, FRFopened, DTKopened, lossopened = leaguedata.getPlayerOpenedPacks(ctx.author.id)
 
-        packSet = None
+        packSet = ""
         isLossPack = False
+
+        '''
 
         if KTKopened < KTKpacks:
             packSet = Pack.KAHNS_SETCODE
@@ -73,6 +75,8 @@ class UserCog(commands.Cog):
             response = "You have no packs to open.\n"
             await ctx.send(response)
             return
+
+        '''
 
         p = Pack()
         p.generate(packSet)
@@ -107,6 +111,8 @@ class UserCog(commands.Cog):
 
         def getMIDLink(cardName, surrounder):
             mId = leaguedata.getMultiverseId(cardName, packSet)
+            if mId == 0 or mId is None:
+                return ""
             return (surrounder + cardName + surrounder + " - " + "https://gatherer.wizards.com/Handlers/Image.ashx?multiverseid=" + str(mId) + "&type=card" + "\n")
 
         if p.rares > 0:

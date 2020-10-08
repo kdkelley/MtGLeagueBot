@@ -334,14 +334,12 @@ def getMultiverseId(name, setcode):
     FROM
     cards
     WHERE
-    (name = ?
-    AND
-    setcode = ?)
+    name = ?
     ORDER BY
-    random()
+    multiverseId DESC
     LIMIT 1"""
     cardId = 0
-    for response in cardCursor.execute(command, (name, setcode,)):
+    for response in cardCursor.execute(command, (name, )):
         cardId = response[0]
     cardCursor.close()
     cardDB.close()

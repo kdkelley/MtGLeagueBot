@@ -153,7 +153,9 @@ class Pack:
         select = "SELECT name FROM cards "
         where = "WHERE "
         where += "rarity = " + rarity + " "
-        where += "AND setcode = " + self.__setcode + " "
+#        where += "AND (frameVersion = 2003 OR frameVersion = 2015) "
+        where += "AND layout != \'vanguard\' "
+#        where += "AND setcode = " + self.__setcode + " "
         if not colors == "":
             where += "AND colors = \'" + colors + "\' "
         for name in excludedNames:
