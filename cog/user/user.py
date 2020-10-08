@@ -9,10 +9,7 @@ from packgen import Pack
 class UserCog(commands.Cog):
 
     async def cog_check(self, ctx):
-        if leaguedata.isUserInLeague(ctx.author.id) and (not leagueutils.isPM(ctx.message)):
-            return True
-        await ctx.send("```Permissions check failed.\nYou likely either need to join the league or you sent this command in a DM.```")
-        return False
+        return leaguedata.isUserInLeague(ctx.author.id) and (not leagueutils.isPM(ctx.message))
 
     @commands.command(brief="Shows you your cardpool or the cardpool of another user.", help="user, if included, must be a valid mention on Discord.\n If user is not included, will retrieve the cardpool of the user that sent the message")
     async def cardpool(self, ctx, user=None):
@@ -46,7 +43,7 @@ class UserCog(commands.Cog):
         leaderboardData = leaguedata.getLeaderboard()
         response = "Leaderboard: \n"
         for datum in leaderboardData:
-            response += str(datum[0]) + ": " + str(datum[1]) + "-" + str(datum[2]) + "\n"
+            response += (str(datum[1]).center(5) + " - " + str(datum[2]).center(5)) + " | " + str(datum[0]) + "\n"
         response += "\n Users without any wins are not shown in the leaderboard.\n"
         await ctx.send(response)
 

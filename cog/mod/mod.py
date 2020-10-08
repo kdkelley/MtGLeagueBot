@@ -7,10 +7,7 @@ from discord.ext.commands import CommandError
 class ModCog(commands.Cog):
 
     async def cog_check(self, ctx):
-        if not (leaguedata.isMod(ctx.author.id)) and (not leagueutils.isPM(ctx.message)):
-            await ctx.send("```Permissions check failed.\nYou likely either aren't a moderator or you sent this command in a DM.```")
-            return False
-        return True
+        return (leaguedata.isMod(ctx.author.id)) and (not leagueutils.isPM(ctx.message))
 
     @commands.command(brief="Used to mod/demod someone.", help="User is expected to be a valid discord mention.\nUse 1 to make someone a mod and 0 to make someone a normal user.")
     async def setmod(self, ctx, user, modValue):

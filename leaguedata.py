@@ -402,7 +402,8 @@ def getLeaderboard():
     losers.loser=players.id
 
     ORDER BY
-    wins DESC
+    wins DESC,
+    losses ASC
     """
     leaderboard = []
     for row in c.execute(command):
