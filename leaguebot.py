@@ -20,7 +20,7 @@ print("Bot launched on ", current_time)
 
 from cog.dev.dev import DevCog
 
-COMMAND_PHRASE = "!"
+COMMAND_PHRASE = "!league"
 
 argparser = argparse.ArgumentParser(description="Discord MtG League Bot")
 argparser.add_argument("--devmode", "-d", help="launches bot in dev mode", action="store_true")
