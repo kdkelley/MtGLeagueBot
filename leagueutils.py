@@ -42,5 +42,11 @@ async def sendMessage(channel, message, file=None, filename='AttachedFile'):
     else:
         await channel.send(message)
 
+async def sendMessageByContext(ctx, message, file=None, filename='AttachedFile'):
+    if file:
+        await ctx.send(message, file=discord.File(file, filename))
+    else:
+        await ctx.send(message)
+
 def isPM(message):
     return message.channel.type == discord.ChannelType.private
