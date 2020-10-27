@@ -154,7 +154,9 @@ class Pack:
         where = "WHERE "
         where += "rarity = " + rarity + " "
 #        where += "AND (frameVersion = 2003 OR frameVersion = 2015) "
+        where += "AND isReprint = 0 "
         where += "AND layout != \'vanguard\' "
+        where += "AND layout != \'scheme\' "
 #        where += "AND setcode = " + self.__setcode + " "
         if not colors == "":
             where += "AND colors = \'" + colors + "\' "

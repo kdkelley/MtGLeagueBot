@@ -108,7 +108,7 @@ def getCardpool(id):
     cardpool = []
     command = "SELECT contents FROM packs WHERE playerid=?"
     for row in c.execute(command, (id,)):
-        cardcontent = row[0]
+        cardcontent = row[0].replace("\'\'", "\'")
         cardcontent = cardcontent.split("|")
         cardpool.extend(cardcontent)
     return cardpool
