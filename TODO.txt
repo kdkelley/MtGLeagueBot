@@ -12,7 +12,14 @@ check JSON reprint rarity change and other stuff
 create ways in discord to config leagues
 make bot compatible with multiple guilds / multiple leagues
 
+have the bot make a weekly summary post
+have an option for the bot to assign a weekly "target" to each player (so as to make a large loop of all players)
+   -need to make a way to remove players from league for mods
+   -also need to add moderator options to change targets then
 
+move setmod to an owner-only command
+
+set the names of the cogs to something more user-friendly
 
 
 
@@ -31,11 +38,22 @@ League Ideas:
    -Zendicar
    -Dominaria (unlikely)
    -Theros
--Cube league: packs are "flat" (no rarity assignment) and picked off a cube list
+-Cube league: packs are "flat" (doesn't care about rarity, just 15 unique cards) and picked off a cube list
    -monocolor
    -weird & wacky
    -peasant
 -Shitty Standard league: only shitty deviant standard decks
 -you may have X copies of this card in your deck League
--brawl
+-brawl/EDH
+-"money" league
+   -packs are ~75% EV (so people don't just buy their decks)
+   -players start with 3 packs
+   -every week players get some amount of money (more than enough to buy a pack), added to their accounts
+   -players can buy singles for their real world value
+   -players cannot sell cards
+   -possible other ways of getting money:
+      -just playing games
+      -winning games
+      -losing games
+      -playing with weekly target
 -custom cards
