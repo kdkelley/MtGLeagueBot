@@ -2,6 +2,8 @@ TODO:
 
 generate packs in bulk, then assign packs to players when they go to open them
    create much more wotc-like packs (based off of printed sheets)
+   
+allow starting combinations of packs that aren't just the first set / allow opening of packs from user-specified sets
 
 rewrite bot to allow more configurable leagues
    -allow configuration via discord commands
