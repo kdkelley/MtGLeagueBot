@@ -1,15 +1,14 @@
 TODO:
---------- not carried over to league 2
 
 generate packs in bulk, then assign packs to players when they go to open them
    create much more wotc-like packs (based off of printed sheets)
 
 rewrite bot to allow more configurable leagues
+   -allow configuration via discord commands
 
 fix split and other cards in the db
-check JSON reprint rarity change and other stuff
+   -need to make some handy tools for massaging data as future leagues seem like they're gonna need it
 
-create ways in discord to config leagues
 make bot compatible with multiple guilds / multiple leagues
 
 have the bot make a weekly summary post
@@ -21,12 +20,25 @@ move setmod to an owner-only command
 
 set the names of the cogs to something more user-friendly
 
-
-
-
+add some sort of donation scheme / moneybegging
+   -offset / pay for hosting costs
+   -additional funds go towards developing additional features / new leagues'
+   -charity drive during each league: 
+      -players use donations to vote for the next league format to be chosen
+      -players can suggest ideas for leagues, which will not be able to be voted on until the *next* league
 
 
 League Ideas:
+-"Traditional" league:
+   -Masters (done once in VTSFFC)
+      -3 weeks Iconic Masters
+      -3 weeks Masters 25
+      -3 weeks Ultimate Masters
+   -Tarkir (done once in VTSFFC) (3/2/4)
+   -Urza's (3/2/4)
+   -Time Spiral (4/2/2)
+   -Innistrad (3/2/4)
+   -pretty much any block TBH
 -Chaos League: every card is replaced with a card ever printed at that rarity
    -might have to leave off older sets due to changes in rarity (modern+?)
 -Special packs: players have a chance of opening a pack that is special e.g. journey to nyx god packs
@@ -42,6 +54,7 @@ League Ideas:
    -monocolor
    -weird & wacky
    -peasant
+   -silver border?
 -Shitty Standard league: only shitty deviant standard decks
 -you may have X copies of this card in your deck League
 -brawl/EDH
