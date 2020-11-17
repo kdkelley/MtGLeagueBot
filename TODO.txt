@@ -29,6 +29,8 @@ add some sort of donation scheme / moneybegging
       -players use donations to vote for the next league format to be chosen
       -players can suggest ideas for leagues, which will not be able to be voted on until the *next* league
 
+multiplayer game compatibility / allow for multiplayer game reporting
+
 
 League Ideas:
 -"Traditional" league:
