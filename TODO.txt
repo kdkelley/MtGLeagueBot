@@ -76,3 +76,4 @@ League Ideas:
 		-losing games
 		-playing with weekly target
 -custom cards
+
