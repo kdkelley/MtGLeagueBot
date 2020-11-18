@@ -1,78 +1,78 @@
 TODO:
 
 generate packs in bulk, then assign packs to players when they go to open them
-   create much more wotc-like packs (based off of printed sheets)
+	create much more wotc-like packs (based off of printed sheets)
    
 allow starting combinations of packs that aren't just the first set / allow opening of packs from user-specified sets
 
 rewrite bot to allow more configurable leagues
-   -allow configuration via discord commands
+	-allow configuration via discord commands
 
 fix split and other cards in the db
-   -need to make some handy tools for massaging data as future leagues seem like they're gonna need it
+	-need to make some handy tools for massaging data as future leagues seem like they're gonna need it
 
 make bot compatible with multiple guilds / multiple leagues
 
 have the bot make a weekly summary post
 have an option for the bot to assign a weekly "target" to each player (so as to make a large loop of all players)
-   -need to make a way to remove players from league for mods
-   -also need to add moderator options to change targets then
+	-need to make a way to remove players from league for mods
+	-also need to add moderator options to change targets then
 
 move setmod to an owner-only command
 
 set the names of the cogs to something more user-friendly
 
 add some sort of donation scheme / moneybegging
-   -offset / pay for hosting costs
-   -additional funds go towards developing additional features / new leagues'
-   -charity drive during each league: 
-      -players use donations to vote for the next league format to be chosen
-      -players can suggest ideas for leagues, which will not be able to be voted on until the *next* league
+	-offset / pay for hosting costs
+	-additional funds go towards developing additional features / new leagues'
+	-charity drive during each league: 
+		-players use donations to vote for the next league format to be chosen
+		-players can suggest ideas for leagues, which will not be able to be voted on until the *next* league
 
 multiplayer game compatibility / allow for multiplayer game reporting
 
 
 League Ideas:
 -"Traditional" league:
-   -Masters (done once in VTSFFC)
-      -3 weeks Iconic Masters
-      -3 weeks Masters 25
-      -3 weeks Ultimate Masters
-   -Tarkir (done once in VTSFFC) (3/2/4)
-   -Urza's (3/2/4)
-   -Time Spiral (4/2/2)
-      -maybe also with the planechase deck?
-         -either during each individual game, or have passive plane effects rolled for every game on a weekly or daily basis
-   -Innistrad (3/2/4)
-   -pretty much any block TBH
+	-Masters (done once in VTSFFC)
+		-3 weeks Iconic Masters
+		-3 weeks Masters 25
+		-3 weeks Ultimate Masters
+	-Tarkir (done once in VTSFFC) (3/2/4)
+	-Urza's (3/2/4)
+	-Time Spiral (4/2/2)
+		-maybe also with the planechase deck?
+			-either during each individual game, or have passive plane effects rolled for every game on a weekly or daily basis
+	-Innistrad (3/2/4)
+	-pretty much any block TBH
 -Chaos League: every card is replaced with a card ever printed at that rarity
-   -might have to leave off older sets due to changes in rarity (modern+?)
+	-might have to leave off older sets due to changes in rarity (modern+?)
 -Special packs: players have a chance of opening a pack that is special e.g. journey to nyx god packs
 -Seeded packs: packs will be seeded towards a particular archetype/color combo, mechanic, .etc
 -Picking Seeded packs: players are given a small slate of 3 or so packs, and are told only how they are seeded, players are then able to open one of the packs that slate. Slate resets every time a new pack is opened.
 -Ravnica mashup: all Ravnica sets are able to found in packs from day 1. Probably would have to be combined with picking seeded packs in one fashion or another (e.g. guilds for 3 weeks, mechanics for 3 weeks, .etc)\
-   -Innistrad
-   -Mirrodin
-   -Zendicar
-   -Dominaria (unlikely)
-   -Theros
+	-Innistrad
+	-Mirrodin
+	-Zendicar
+	-Dominaria (unlikely)
+	-Theros
 -Cube league: packs are "flat" (doesn't care about rarity, just 15 unique cards) and picked off a cube list
-   -monocolor
-   -weird & wacky
-   -peasant
-   -silver border?
+	-monocolor
+	-weird & wacky
+	-peasant
+	-silver border?
 -Shitty Standard league: only shitty deviant standard decks
 -you may have X copies of this card in your deck League
 -brawl/EDH
 -"money" league
-   -packs are ~75% EV (so people don't just buy their decks)
-   -players start with 3 packs
-   -every week players get some amount of money (more than enough to buy a pack), added to their accounts
-   -players can buy singles for their real world value
-   -players cannot sell cards
-   -possible other ways of getting money:
-      -just playing games
-      -winning games
-      -losing games
-      -playing with weekly target
+	-packs are ~75% EV (so people don't just buy their decks)
+	-players start with 3 packs
+	-every week players get some amount of money (more than enough to buy a pack), added to their accounts
+	-players can buy singles for their real world value
+	-players cannot sell cards
+	-possible other ways of getting money:
+		-just playing games
+		-winning games
+		-losing games
+		-playing with weekly target
 -custom cards
