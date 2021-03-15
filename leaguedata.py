@@ -44,8 +44,6 @@ timestamp DATETIME DEFAULT (DATETIME('now', 'localtime'))
 ); """
 
 conn = None
-
-WIPE_TABLES_ON_START = False
 ON_START = True
 
 def isUserInLeague(id):
