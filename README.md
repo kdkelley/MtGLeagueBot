@@ -22,20 +22,27 @@ dotenv:
 pip install -U python-dotenv
 ```
 
+GitPython:
+
+```
+pip install GitPython
+```
+
 If you haven't already at this point you'll need to [create your application on discord](https://discord.com/developers/docs/intro).
 
 You then need to make a file in the root directory named .env, and have its contents look something like this:
 
 ```
-DISCORD_TOKEN="[BOT TOKEN]"
+NORMAL_TOKEN="[BOT TOKEN]"
+DEV_TOKEN="[BOT TOKEN]"
 ```
 
-Where [BOT TOKEN] is the token for the bot of your discord application.
+Where [BOT TOKEN] is the token for the bot of your discord application. The DEV_TOKEN is used if the bot is running in dev mode.
 
 You will also need to download the .sqlite database for all of the MtG cards created by the MtGJSON project from [here](https://mtgjson.com/api/v5/AllPrintings.sqlite).
 
 Put that file in a new directory named "data". Do not change its name.
 
-At this point you need to go to the leaguedata.py file and make sure that the variable WIPE_TABLES_ON_START is set to True. Run the bot once, then kill the bot and set it to False before running the bot again.
+To do initial setup run the bot with the -w or --wipe flags, and it should initialize all of the necessary tables.
 
 If you did all of that properly the bot should now be functional. Keep in mind that Discord.py often will break completely as Discord updates, and will need to be updated regularly.
