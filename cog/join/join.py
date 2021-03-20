@@ -1,5 +1,6 @@
 import leaguedata
 import leagueutils
+import valuestore
 
 from discord.ext import commands
 
@@ -12,6 +13,9 @@ class JoinCog(commands.Cog):
     async def join(self, ctx):
         leaguedata.addPlayer(ctx.author)
         leaguedata.setPlayerActive(ctx.author.id)
+        extraEnergy = (leagueutils.getWeekNumber() - 1) * valuestore.getValue("ENERGY_PER_WEEK")
+        if extraEnergy > 0:
+            leaguedata.changePlayerEnergy(ctx.author.id, extraEnergy)
         response = "Welcome to the league " + ctx.author.name + "!"
         await ctx.send(response)
 
