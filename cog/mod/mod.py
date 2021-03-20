@@ -1,5 +1,6 @@
 import leaguedata
 import leagueutils
+import valuestore
 
 from discord.ext import commands
 from discord.ext.commands import CommandError
@@ -8,13 +9,6 @@ class ModCog(commands.Cog):
 
     async def cog_check(self, ctx):
         return (leaguedata.isMod(ctx.author.id)) and (not leagueutils.isPM(ctx.message))
-
-    @commands.command(brief="Used to mod/demod someone.", help="User is expected to be a valid discord mention.\nUse 1 to make someone a mod and 0 to make someone a normal user.")
-    async def setmod(self, ctx, user, modValue):
-        targetID = leagueutils.getIDFromMention(user)
-        modVal = int(modValue)
-        leaguedata.setMod(targetID, modVal)
-        await ctx.send("Mod status updated.")
 
     @commands.group(brief="Used to list various information about the league.")
     async def list(self, ctx):
@@ -56,6 +50,9 @@ class ModCog(commands.Cog):
 
     @list.command(brief="lists players in the league.", help="Player should either be a discord mention or '%'.\nNumber controls the number of results.\nPlayers are ordered with those having joined the league most recently shown first.")
     async def players(self, ctx, player="%", number=10):
+        if not player == "%":
+            player = str(leagueutils.getIDFromMention(player))
+        print("LOGGING player = " + player)
         playerData = leaguedata.getPlayers(number, player)
         response = "Players:\n id | name | isMod | time joined\n"
         for player in playerData:
@@ -75,6 +72,13 @@ class ModCog(commands.Cog):
         leaguedata.updatePackContents(packid, newcontents)
         await ctx.send("Pack contents updated.")
 
+    @commands.command(brief="Gives or removes energy from a player.", help="Takes a player reference and a value which modifies the player's energy.")
+    async def changeplayerenergy(self, ctx, playerid, deltaEnergy):
+        playerid = leagueutils.getIDFromMention(playerid)
+        deltaEnergy = int(deltaEnergy)
+        leaguedata.changePlayerEnergy(playerid, deltaEnergy)
+        await ctx.send("Player energy changed.")
+
     @commands.group(brief="Delete a game or pack.")
     async def delete(self, ctx):
         if ctx.invoked_subcommand is None:
@@ -89,6 +93,21 @@ class ModCog(commands.Cog):
     async def pack(self, ctx, packID):
         leaguedata.deletePack(packID)
         await ctx.send("Pack deleted.")
+
+    @commands.command(brief="Directs all non-reply messages of the bot to this channel.", help="Takes no arguments, make sure you are in the intended channel when you use this command.")
+    async def attunechannel(self, ctx):
+        valuestore.setValue("CHANNEL_ID", ctx.channel.id)
+        await ctx.send("Announcement channel changed.")
+
+    @commands.command(brief="This is the role that will be mentioned by the bot in the weekly report.", help="Takes a mention of the role you would like the bot to then go on to mention.")
+    async def attuneRole(self, ctx, role):
+        valuestore.setValue("ROLE_ID", leagueutils.getIDFromMention(role))
+        await ctx.send("Announcement role changed.")
+
+    @commands.command(brief="Sets the first player's rival to be the second player.", help="First argument is a mention of the player whose rival you want to set, the second argument is a mention of the player who will be set as their rival.")
+    async def forceSetRival(self, ctx, targetPlayer, targetRival):
+        leaguedata.setPlayerRival(targetPlayer, targetRival)
+        await ctx.send("Rival updated.")
 
 def setup(bot):
     bot.add_cog(ModCog(bot))

@@ -10,6 +10,7 @@ import configparser
 import packgen
 import leagueutils
 import leaguedata
+import valuestore
 
 from dotenv import load_dotenv
 load_dotenv()
@@ -41,6 +42,8 @@ DESCRIPTION_TEXT = "A bot that manages a MtG league.\n\n Note: The card \'Fire\'
 
 bot = commands.Bot(command_prefix=COMMAND_PHRASE + " ", description=DESCRIPTION_TEXT)
 
+valuestore.initialize(os.getenv("OWNER_ID"), DEV_MODE)
+
 @bot.event
 async def on_ready():
     print(f'{bot.user} has connected to Discord!')
@@ -50,7 +53,8 @@ EXTENSIONS = [
 "cog.mod.mod",
 "cog.user.user",
 "cog.join.join",
-"cog.owner.owner"
+"cog.owner.owner",
+"cog.weekly.weekly"
 ]
 
 if DEV_MODE:

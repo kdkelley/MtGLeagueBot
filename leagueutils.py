@@ -27,10 +27,18 @@ def getCurrentSet():
         return Pack.DRAGONS_SETCODE
 
 def getIDFromMention(mention):
-    if not mention[-1] == ">" or not mention.startswith("<@!"):
+    if not mention[-1] == ">":
         return -1
-    else:
+    if not mention[0:2] == "<@":
+        return -1
+    if mention[2] == "#" or mention [2] == "!" or mention[2] == "&":
         return int(mention[3:-1])
+    else:
+        return int(mention[2:-1])
+#    if not mention[-1] == ">" or not mention.startswith("<@!"):
+#        return -1
+#    else:
+#        return int(mention[3:-1])
 
 async def PMuser(user, message, file=None, filename='AttachedFile'):
     await user.create_dm()
