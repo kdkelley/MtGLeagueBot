@@ -149,7 +149,7 @@ def setHasPlayedRival(id, value):
 
 def hasPlayerPlayedRival(id):
     global c
-    for row in c.execute("SELECT hasPlayedRival FROM players WHERE id=?", (id, ))
+    for row in c.execute("SELECT hasPlayedRival FROM players WHERE id=?", (id, )):
         return not row[0] == 0
 
 def changeAllPlayerEnergy(deltaEnergy):
