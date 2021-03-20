@@ -1,6 +1,7 @@
 import leagueutils
 import leaguedata
 import valuestore
+import rivalsystem
 
 import asyncio
 import os
@@ -35,18 +36,7 @@ class WeeklyCog(commands.Cog):
         print("ending weekly update, bot execution may now be stopped safely.")
 
     def updateRivalSystem(self):
-        leaguedata.setAllPlayersNotPlayedWithRival()
-        allPlayers = leaguedata.getAllActivePlayers()
-        if len(allPlayers) <= 1:
-            for player in allPlayers:
-                leaguedata.setPlayerRival(player, -1)
-            return
-
-        random.shuffle(allPlayers)
-        for i in range(1, len(allPlayers)):
-            leaguedata.setPlayerRival(allPlayers[i-1], allPlayers[i])
-        print(allPlayers)
-        leaguedata.setPlayerRival(allPlayers[len(allPlayers) - 1], allPlayers[0])
+        rivalsystem.regenerateAllRivals()
 
     async def makeAnnouncement(self):
         if not valuestore.hasValue("CHANNEL_ID"):

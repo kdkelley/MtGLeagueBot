@@ -1,6 +1,7 @@
 import leaguedata
 import leagueutils
 import valuestore
+import rivalsystem
 
 from discord.ext import commands
 from discord.ext.commands import CommandError
@@ -108,6 +109,11 @@ class ModCog(commands.Cog):
     async def forceSetRival(self, ctx, targetPlayer, targetRival):
         leaguedata.setPlayerRival(targetPlayer, targetRival)
         await ctx.send("Rival updated.")
+
+    @commands.command(brief="Regenerates all rival selections.", help="Takes no arguments. Regenerates all rival selections such that everyone has one rival and one person rivaling them.")
+    async def forceRegenerateRivals(self, ctx):
+        rivalsystem.regenerateAllRivals()
+        await ctx.send("All rivals updated.")
 
 def setup(bot):
     bot.add_cog(ModCog(bot))
