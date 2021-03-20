@@ -11,6 +11,7 @@ class JoinCog(commands.Cog):
     @commands.command(brief="Join the league.")
     async def join(self, ctx):
         leaguedata.addPlayer(ctx.author)
+        leaguedata.setPlayerActive(ctx.author.id)
         response = "Welcome to the league " + ctx.author.name + "!"
         await ctx.send(response)
 

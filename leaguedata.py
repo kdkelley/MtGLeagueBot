@@ -8,6 +8,8 @@ from sqlite3 import Error
 import leagueutils
 from packgen import Pack
 
+import random
+
 OWNER_ID = 260682887421100034
 DB_PATH = "data/LeagueData.sqlite"
 START_DATE = date(2020, 9, 24)
@@ -24,13 +26,24 @@ SQL_CREATE_PLAYER_TABLE = """ CREATE TABLE IF NOT EXISTS players (
 id INTEGER PRIMARY KEY,
 name TEXT,
 isMod INTEGER DEFAULT 0,
-timestamp DATETIME DEFAULT (DATETIME('now', 'localtime'))
+timestamp DATETIME DEFAULT (DATETIME('now', 'localtime')),
+isActive INTEGER DEFAULT 1,
+rivalID INTEGER DEFAULT -1,
+energy INTEGER DEFAULT 0,
+hasPlayedRival INTEGER DEFAULT 0
 ); """
 
 SQL_CREATE_GAMES_TABLE = """ CREATE TABLE IF NOT EXISTS games (
 gameID INTEGER PRIMARY KEY AUTOINCREMENT,
 winner INTEGER,
 loser INTEGER,
+timestamp DATETIME DEFAULT (DATETIME('now', 'localtime'))
+); """
+
+SQL_CREATE_ENERGY_TABLE = """ CREATE TABLE IF NOT EXISTS energy (
+transactionid INTEGER PRIMARY KEY AUTOINCREMENT,
+playerid INTEGER,
+energyChange INTEGER,
 timestamp DATETIME DEFAULT (DATETIME('now', 'localtime'))
 ); """
 
@@ -65,6 +78,94 @@ def getPlayerName(id):
     global c
     for row in c.execute("SELECT name FROM players WHERE id=?", (id,)):
         return row[0]
+
+def getIsPlayerActive(id):
+    global c
+    for row in c.execute('SELECT COUNT(*) FROM players WHERE id=? AND isActive=1', (id,)):
+        return row[0] == 1
+
+def getAllActivePlayers():
+    global c
+    ids = []
+    for row in c.execute('SELECT id FROM players WHERE isActive=1'):
+        ids.append(row[0])
+    return ids
+
+def setPlayerActive(id):
+    global c
+    global conn
+    missingRivals = getAllPlayersMissingRivals()
+    if len(missingRivals) > 0:
+        random.shuffle(missingRivals)
+        setPlayerRival(missingRivals[0], id)
+    actives = getAllActivePlayers()
+    if len(actives) > 0:
+        random.shuffle(actives)
+        setPlayerRival(id, actives[0])
+    c.execute("UPDATE players SET isActive=1 WHERE id=?", (id, ))
+    conn.commit()
+
+def setPlayerInactive(id):
+    global c
+    global conn
+    playerRival = getPlayerRival(id)
+    c.execute("UPDATE players SET rivalID=? WHERE rivalID=?", (playerRival, id, ))
+    c.execute("UPDATE players SET rivalID=-1 WHERE (rivalID=id OR id=?)", (id, ))
+    c.execute("UPDATE players SET isActive=0 WHERE id=?", (id, ))
+    conn.commit()
+
+def getAllPlayersMissingRivals():
+    return getAllPlayersWhoRival(-1)
+
+def getAllPlayersWhoRival(id):
+    global c
+    allRivals = []
+    for row in c.execute('SELECT id FROM players WHERE (rivalID=? and isActive=1)', (id, )):
+        allRivals.append(row[0])
+    return allRivals
+
+def getPlayerEnergy(id):
+    return getPlayerByID(id).energy
+
+def changePlayerEnergy(id, deltaEnergy):
+    global c
+    global conn
+    newEnergy = getPlayerEnergy(id) + deltaEnergy
+    c.execute("UPDATE players SET energy=? WHERE id=?", (newEnergy, id,))
+    c.execute("INSERT INTO energy (playerid, energyChange) VALUES (?, ?)", (id, deltaEnergy,))
+    conn.commit()
+
+def setAllPlayersNotPlayedWithRival():
+    global c
+    global conn
+    c.execute("UPDATE players SET hasPlayedRival=0")
+    conn.commit()
+
+def setHasPlayedRival(id, value):
+    global c
+    global conn
+    c.execute("UPDATE players SET hasPlayedRival=? WHERE id=?", (value, id, ))
+    conn.commit()
+
+def hasPlayerPlayedRival(id):
+    global c
+    for row in c.execute("SELECT hasPlayedRival FROM players WHERE id=?", (id, ))
+        return not row[0] == 0
+
+def changeAllPlayerEnergy(deltaEnergy):
+    global c
+    global conn
+    c.execute("UPDATE players SET energy = energy + ?", (deltaEnergy, ))
+    conn.commit()
+
+def getPlayerRival(id):
+    return getPlayerByID(id).rivalID
+
+def setPlayerRival(playerid, rivalid):
+    global c
+    global conn
+    c.execute("UPDATE players SET rivalID=? WHERE id=?", (rivalid, playerid, ))
+    conn.commit()
 
 def getPlayerMaxPacks(id):
     playerLosses = getPlayerLosses(id)
@@ -257,11 +358,14 @@ def getLastPacks(numPacks, player):
     return packData
 
 class PlayerData():
-    def __init__(self, id, name, isMod, timestamp):
+    def __init__(self, id, name, isMod, timestamp, isActive, rivalID, energy):
         self.id = id
         self.name = name
         self.isMod = isMod
         self.timestamp = timestamp
+        self.isActive = isActive
+        self.rivalID = rivalID
+        self.energy = energy
 
 def getPlayers(numPlayers, pattern):
     command = """
@@ -270,15 +374,21 @@ def getPlayers(numPlayers, pattern):
     FROM
     players
     WHERE
-    name LIKE ?
+    id LIKE ?
     ORDER BY
     timestamp DESC
     LIMIT ?
     """
     playerdata = []
     for row in c.execute(command, (pattern, numPlayers,)):
-        playerdata.append(PlayerData(row[0], row[1], row[2], row[3]))
+        playerdata.append(PlayerData(row[0], row[1], row[2], row[3], row[4], row[5], row[6]))
     return playerdata
+
+def getPlayerByID(id):
+    playerData = getPlayers(1, id)
+    if len(playerData) == 0:
+        return False
+    return playerData[0]
 
 def getGameById(gameID):
     command = """
@@ -349,26 +459,6 @@ def getMultiverseId(name, setcode):
 # otherwise get all records
 def getLeaderboard():
     global c
-#    command = """
-#    SELECT
-#    name, wins
-#    FROM
-#    (
-#        SELECT winner,
-#        COUNT(*)
-#        AS 'wins'
-#        FROM games
-#        GROUP BY winner
-#    )
-#    winners
-#    INNER JOIN
-#    players
-#    ON
-#    winners.winner=players.id
-#    ORDER BY
-#    wins DESC
-#    """
-
     command = """
     SELECT
     name, wins, losses
@@ -424,12 +514,16 @@ def connect(wipeTables=False, onStart=False):
                 print(row)
             for row in c.execute("DROP TABLE IF EXISTS packs"):
                 print(row)
+            for row in c.execute("DROP TABLE IF EXISTS energy"):
+                print(row)
             print("Refresh tables")
             for row in c.execute(SQL_CREATE_PLAYER_TABLE):
                 print(row)
             for row in c.execute(SQL_CREATE_GAMES_TABLE):
                 print(row)
             for row in c.execute(SQL_CREATE_PACKS_TABLE):
+                print(row)
+            for row in c.execute(SQL_CREATE_ENERGY_TABLE):
                 print(row)
         print("Done with initial database operations.")
     except Error as e:

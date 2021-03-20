@@ -11,6 +11,22 @@ class UserCog(commands.Cog):
     async def cog_check(self, ctx):
         return leaguedata.isUserInLeague(ctx.author.id) and (not leagueutils.isPM(ctx.message))
 
+    @commands.command(brief="Sets yourself as inactive for the purposes of the rival system.", help="No arguments needed. Please do not abuse or overuse this command as it does affect rival assignment.")
+    async def setinactive(self, ctx, user=None):
+        if leaguedata.getIsPlayerActive(ctx.author.id):
+            leaguedata.setPlayerInactive(ctx.author.id)
+            await ctx.send("You have been marked inactive.")
+        else:
+            await ctx.send("You are already inactive.")
+
+    @commands.command(brief="Sets yourself as active for the purposes of the rival system.", help="No arguments needed..")
+    async def setactive(self, ctx, user=None):
+        if not leaguedata.getIsPlayerActive(ctx.author.id):
+            leaguedata.setPlayerActive(ctx.author.id)
+            await ctx.send("You have been marked active.")
+        else:
+            await ctx.send("You are already active.")
+
     @commands.command(brief="Shows you your cardpool or the cardpool of another user.", help="user, if included, must be a valid mention on Discord.\n If user is not included, will retrieve the cardpool of the user that sent the message")
     async def cardpool(self, ctx, user=None):
 
@@ -145,8 +161,16 @@ class UserCog(commands.Cog):
             response = "You are not in the league.\nThe game was not recorded.\n"
             await ctx.send(response)
             return
+        if not leaguedata.getIsPlayerActive(ctx.author.id):
+            response = "You are not active. Please set yourself as active and try again.\nThe game was not recorded.\n"
+            await ctx.send(response)
+            return
         if not leaguedata.isUserInLeague(leagueutils.getIDFromMention(opponent)):
             response = "Your opponent is not in the league.\nThe game was not recorded.\n"
+            await ctx.send(response)
+            return
+        if not leaguedata.getIsPlayerActive(leagueutils.getIDFromMention(opponent)):
+            response = "Your opponent is not active in the league. Please have your opponent set themselves as active and try again.\nThe game was not recorded.\n"
             await ctx.send(response)
             return
 
@@ -167,12 +191,12 @@ class UserCog(commands.Cog):
         gamesToday = leaguedata.getGamesToday(winnerID, loserID)
         gamesThisWeek = leaguedata.getGamesThisWeek(winnerID, loserID)
 
-        if len(gamesToday) >= leaguedata.MAX_IDENTICAL_GAMES_PER_DAY:
+        if len(gamesToday) >= valuestore.getValue("MAX_IDENTICAL_GAMES_PER_DAY"):
             response = "Players have already played " + str(len(gamesToday)) + " time(s) today. (Limit: " + str(leaguedata.MAX_IDENTICAL_GAMES_PER_DAY) + ")\nThe game was not recorded.\n"
             await ctx.send(response)
             return
 
-        if len(gamesThisWeek) >= leaguedata.MAX_IDENTICAL_GAMES_PER_WEEK:
+        if len(gamesThisWeek) >= valuestore.getValue("MAX_IDENTICAL_GAMES_PER_WEEK"):
             response = "Players have already played " + str(len(gamesThisWeek)) + " time(s) this week. (Limit: " + str(leaguedata.MAX_IDENTICAL_GAMES_PER_WEEK) + ")\nThe game was not recorded.\n"
             await ctx.send(response)
             return
@@ -211,6 +235,14 @@ class UserCog(commands.Cog):
 
         response += "You have " + str(wins) + " wins and " + str(losses) + " losses.\n\n"
 
+        rivalID = leaguedata.getPlayerRival(ctx.author.id)
+
+        if not rivalID == -1:
+            rivalName = leaguedata.getPlayerName(rivalID)
+            response += "Your rival is " + rivalName + ".\n\n"
+        else:
+            response += "You currently have no valid rival.\n\n"
+
         response += "It is currently week " + str(leagueutils.getWeekNumber()) + " (" + str(leagueutils.getDaysLeftInWeek()) + " day(s) left)\n"
         response += "The current set is " + leagueutils.getCurrentSet() + "\n"
 
@@ -218,6 +250,10 @@ class UserCog(commands.Cog):
             response += "Decks should be 40 cards.\n\n"
         else:
             response += "Decks should be 30 cards, but will need to be 40 cards starting on week 4.\n\n"
+
+        energy = leaguedata.getPlayerEnergy(ctx.author.id)
+
+        response += "You have " + str(energy) + " energy.\n"
 
         KTKpacks, FRFpacks, DTKpacks, losspacks = leaguedata.getPlayerMaxPacks(ctx.author.id)
         KTKopened, FRFopened, DTKopened, lossopened = leaguedata.getPlayerOpenedPacks(ctx.author.id)
