@@ -1,5 +1,6 @@
 import leagueutils
 import leaguedata
+import valuestore
 
 import os
 import sys
@@ -36,6 +37,16 @@ class OwnerCog(commands.Cog):
         modVal = int(modValue)
         leaguedata.setMod(targetID, modVal)
         await ctx.send("Mod status updated.")
+
+    @commands.command(brief="Used to directly change values.", help="key and value can be anything.")
+    async def setstorestring(self, ctx, key, value):
+        valuestore.setValue(key, str(value))
+        await ctx.send("value updated.")
+
+    @commands.command(brief="Used to directly change values.", help="key and value can be anything.")
+    async def setstoreint(self, ctx, key, value):
+        valuestore.setValue(key, int(value))
+        await ctx.send("value updated.")
 
 def setup(bot):
     bot.add_cog(OwnerCog(bot))
