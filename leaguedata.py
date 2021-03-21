@@ -72,7 +72,8 @@ def getPlayersUnopenedPacks(id):
         COUNT(*)
     FROM packs
     WHERE
-        playerid = ?
+        playerid = ? AND
+        isOpened = 0
     GROUP BY setcode
     """
     unopenedPackData = []
