@@ -88,45 +88,39 @@ class UserCog(commands.Cog):
         await ctx.send("Gave you a pack of " + setcode)
 
     @commands.command(aliases=['op', "pack", "open"], brief="Opens a pack, should you have one to open.", help="Opens a pack. Begins with the first set out and then opens subsequent packs. Packs earned from losses will be opened last and will always be of the current set.")
-    async def openpack(self, ctx):
+    async def openpack(self, ctx, setcode=None):
         if leagueutils.isPM(ctx.message):
             response = "Please open packs in public, where we can all share the excitement!\n"
             await ctx.send(response)
             return
 
-        KTKpacks, FRFpacks, DTKpacks, losspacks = leaguedata.getPlayerMaxPacks(ctx.author.id)
-        KTKopened, FRFopened, DTKopened, lossopened = leaguedata.getPlayerOpenedPacks(ctx.author.id)
+        unopenedPackData = leaguedata.getPlayersUnopenedPacks(ctx.author.id)
 
-        packSet = None
-        isLossPack = False
+        if len(unopenedPackData) == 0:
+            response = "You don't have any packs to open."
+            await ctx.send(response)
+            return
+        
+        if (setcode is None):
+            setcode = unopenedPackData[0][0]
 
-        if KTKopened < KTKpacks:
-            packSet = Pack.KAHNS_SETCODE
-        elif FRFopened < FRFpacks:
-            packSet = Pack.FATE_SETCODE
-        elif DTKopened < DTKpacks:
-            packSet = Pack.DRAGONS_SETCODE
-        elif lossopened < losspacks:
-            packSet = leagueutils.getCurrentSet()
-            isLossPack = True
-        else:
-            response = "You have no packs to open.\n"
+        hasFoundPackOfSet = False
+        toOpen = 0
+
+        for setPackInfo in unopenedPackData:
+            toOpen += setPackInfo[1]
+            if setPackInfo[0] == setcode:
+                hasFoundPackOfSet = True
+
+        if not hasFoundPackOfSet:
+            response = "Can't find a pack of that set you need to open."
             await ctx.send(response)
             return
 
         p = Pack()
-        p.generate(packSet)
+        p.generate(setcode)
 
-        response = ctx.author.name + " opened a pack of " + packSet + "!" + "\n\n"
-
-        KTKpacks, FRFpacks, DTKpacks, losspacks = leaguedata.getPlayerMaxPacks(ctx.author.id)
-        KTKopened, FRFopened, DTKopened, lossopened = leaguedata.getPlayerOpenedPacks(ctx.author.id)
-
-        KTKToOpen = KTKpacks - KTKopened
-        FRFToOpen = FRFpacks - FRFopened
-        DTKToOpen = DTKpacks - DTKopened
-
-        toOpen = KTKToOpen + FRFToOpen + DTKToOpen
+        response = ctx.author.name + " opened a pack of " + setcode + "!" + "\n\n"
 
         response += "Its contents:\n\n"
 
@@ -135,7 +129,7 @@ class UserCog(commands.Cog):
         rareData = p.cardData[p.commons + p.uncommons: p.commons + p.uncommons + p.rares]
         mythicData = p.cardData[p.commons + p.uncommons + p.rares:]
 
-        leaguedata.playerOpenedPack(ctx.author.id, p, isLossPack)
+        leaguedata.playerOpenExistingPack(ctx.author.id, p)
 
         commonsBody = "Commons:\n" + "\n".join(commonsData) + "\n\n"
         response += commonsBody
@@ -144,7 +138,7 @@ class UserCog(commands.Cog):
         response += uncommonsBody
 
         def getMIDLink(cardName, surrounder):
-            mId = leaguedata.getMultiverseId(cardName, packSet)
+            mId = leaguedata.getMultiverseId(cardName, setcode)
             return (surrounder + cardName + surrounder + " - " + "https://gatherer.wizards.com/Handlers/Image.ashx?multiverseid=" + str(mId) + "&type=card" + "\n")
 
         if p.rares > 0:
@@ -350,37 +344,13 @@ class UserCog(commands.Cog):
 
         response += "You have " + str(energy) + " energy.\n"
 
-        KTKpacks, FRFpacks, DTKpacks, losspacks = leaguedata.getPlayerMaxPacks(ctx.author.id)
-        KTKopened, FRFopened, DTKopened, lossopened = leaguedata.getPlayerOpenedPacks(ctx.author.id)
+        unopenedPackData = leaguedata.getPlayersUnopenedPacks(ctx.author.id)
 
-        KTKToOpen = KTKpacks - KTKopened
-        FRFToOpen = FRFpacks - FRFopened
-        DTKToOpen = DTKpacks - DTKopened
-
-        currentSet = leagueutils.getCurrentSet()
-
-        lossToOpen = losspacks - lossopened
-
-        if currentSet == Pack.KAHNS_SETCODE:
-            KTKToOpen += lossToOpen
-        elif currentSet == Pack.FATE_SETCODE:
-            FRFToOpen += lossToOpen
-        elif currentSet == Pack.DRAGONS_SETCODE:
-            DTKToOpen += lossToOpen
-
-        if KTKToOpen > 0:
-            response += "You have " + str(KTKToOpen) + " Iconic Masters packs to open!\n"
-
-        if FRFToOpen > 0:
-            response += "You have " + str(FRFToOpen) + " Masters 25 packs to open!\n"
-
-        if DTKToOpen > 0:
-            response += "You have " + str(DTKToOpen) + " Ultimate Masters packs to open!\n"
-
-        if KTKToOpen + FRFToOpen + DTKToOpen == 0:
-            response += "There are no packs you need to open at this time.\n"
+        if len(unopenedPackData) == 0:
+            response += "You have no packs to open at this time."
         else:
-            response += "You can open them using \"!league openpack\".\n The set opened will be chosen in order.\n Packs from losses will automatically move to the latest set when it releases.\n"
+            for packrow in unopenedPackData:
+                response += "You have " + str(packrow[1]) + " " + str(packrow[0]) + " packs to open!\n"
 
         response += "```"
 
