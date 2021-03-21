@@ -55,7 +55,7 @@ class UserCog(commands.Cog):
         response = "Cardpool is attached.\n"
 
         cardpool_stream = io.BytesIO("\n".join(cardpool).encode())
-        filename = leaguedata.getPlayerName(target) + "_" + datetime.now().strftime("%m_%d_%Y_%H_%M_%S") + "_Cardpool.txt"
+        filename = leaguedata.getPlayerName(target) + "_" + datetime.datetime.now().strftime("%m_%d_%Y_%H_%M_%S") + "_Cardpool.txt"
         await leagueutils.sendMessageByContext(ctx, response, file=cardpool_stream, filename=filename)
 
     @commands.command(brief="Shows you the current leaderboard.", help="Shows you the current leaderboard.")
@@ -66,6 +66,26 @@ class UserCog(commands.Cog):
         for datum in leaderboardData:
             response += (str(datum[1]).center(5) + " - " + str(datum[2]).center(5)) + " | " + str(datum[0]) + "\n"
         await ctx.send(response)
+
+    @commands.command(aliases=['testopen'], brief="Buys a pack of the given setcode.", help="Buys a pack of the given setcode, but does not open it.")
+    async def testopenpack(self, ctx, setcode):
+        if leaguedata.doesPlayerHaveUnopenedPack(ctx.author.id, setcode):
+            p = Pack()
+            p.generate(setcode)
+            leaguedata.playerOpenExistingPack(ctx.author.id, p)
+            await ctx.send("such a pack was opened")
+        else:
+            await ctx.send("no such unopened pack")
+
+    @commands.command(aliases=['view'], brief="Buys a pack of the given setcode.", help="Buys a pack of the given setcode, but does not open it.")
+    async def viewpacks(self, ctx):
+        leaguedata.getPlayersUnopenedPacks(ctx.author.id)
+        await ctx.send("viewing")
+
+    @commands.command(aliases=['buy'], brief="Buys a pack of the given setcode.", help="Buys a pack of the given setcode, but does not open it.")
+    async def buypack(self, ctx, setcode):
+        leaguedata.givePlayerUnopenedPack(ctx.author.id, setcode)
+        await ctx.send("Gave you a pack of " + setcode)
 
     @commands.command(aliases=['op', "pack", "open"], brief="Opens a pack, should you have one to open.", help="Opens a pack. Begins with the first set out and then opens subsequent packs. Packs earned from losses will be opened last and will always be of the current set.")
     async def openpack(self, ctx):

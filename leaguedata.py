@@ -52,12 +52,39 @@ playerid INTEGER,
 setcode TEXT,
 isLoss INTEGER DEFAULT 0,
 contents TEXT DEFAULT NULL,
-isOpened INTEGER DEFAULT 0,
+isOpened INTEGER DEFAULT 1,
 timestamp DATETIME DEFAULT (DATETIME('now', 'localtime'))
 ); """
 
 conn = None
 ON_START = True
+
+def doesPlayerHaveUnopenedPack(id, setcode):
+    global c
+    for row in c.execute("SELECT COUNT(*) FROM packs WHERE playerid=? AND setcode=? and isOpened=?", (id, setcode, 0, )):
+        return row[0] > 0
+
+def getPlayersUnopenedPacks(id):
+    global c
+    command = """
+    SELECT
+        setcode,
+        COUNT(*)
+    FROM packs
+    WHERE
+        playerid = ?
+    GROUP BY setcode
+    """
+    unopenedPackData = []
+    for row in c.execute(command, (id, )):
+        unopenedPackData.append((row[0], row[1]))
+    return unopenedPackData
+
+def givePlayerUnopenedPack(id, setcode):
+    global c
+    global conn
+    c.execute('INSERT INTO packs (playerid, setcode, isOpened) VALUES (?, ?, ?)', (id, setcode, 0))
+    conn.commit()
 
 def isUserInLeague(id):
     global c
@@ -192,6 +219,32 @@ def getPlayerOpenedPacks(id):
         LOSSopened = row[0]
     return KTKopened, FRFopened, DTKopened, LOSSopened
 
+def playerOpenExistingPack(id, p):
+    global c
+    global conn
+    command = """
+    UPDATE packs
+    SET
+        contents = ?,
+        isOpened = 1
+    WHERE
+        packid
+    IN
+        (SELECT packid
+        FROM packs
+        WHERE
+            playerid = ? AND
+            setcode = ? AND
+            isOpened = 0
+        LIMIT 1)
+    """
+
+    cardContentString = "|".join(p.cardData)
+    cardContentString = cardContentString.replace("\'", "\'\'")
+
+    c.execute(command, (cardContentString, id, p.set, ))
+    conn.commit()
+
 def playerOpenedPack(id, p, isLossPack):
     global c
     global conn
@@ -205,9 +258,10 @@ def getCardpool(id):
     global c
     global conn
     cardpool = []
-    command = "SELECT contents FROM packs WHERE playerid=?"
+    command = "SELECT contents FROM packs WHERE playerid=? AND isOpened=1"
     for row in c.execute(command, (id,)):
         cardcontent = row[0]
+        cardcontent = cardcontent.replace("\'\'", "\'")
         cardcontent = cardcontent.split("|")
         cardpool.extend(cardcontent)
     return cardpool
