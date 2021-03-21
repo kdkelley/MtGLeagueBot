@@ -1,5 +1,6 @@
 from discord.ext import commands
-from datetime import datetime
+import datetime
+from datetime import timedelta
 import io
 
 import leaguedata
@@ -11,6 +12,7 @@ import valuestore
 class UserCog(commands.Cog):
 
     async def cog_check(self, ctx):
+        # return leaguedata.isUserInLeague(ctx.author.id) and (not leagueutils.isPM(ctx.message)) and (not leagueutils.getWeekNumber() < 1)
         return leaguedata.isUserInLeague(ctx.author.id) and (not leagueutils.isPM(ctx.message))
 
     @commands.command(brief="Sets yourself as inactive for the purposes of the rival system.", help="No arguments needed. Please do not abuse or overuse this command as it does affect rival assignment.")
@@ -307,7 +309,16 @@ class UserCog(commands.Cog):
 
         response += "\n\n"
 
-        response += "It is currently week " + str(leagueutils.getWeekNumber()) + " (" + str(leagueutils.getDaysLeftInWeek()) + " day(s) left)\n"
+        weekNum = leagueutils.getWeekNumber()
+
+        nextWeekStart = valuestore.getValue("START_DATE") + timedelta(days=(7 * weekNum))
+        now = datetime.datetime.now()
+
+        timeTillNextWeekStart = nextWeekStart - now
+
+        timeString = leagueutils.getTimeDifferenceFormattedString(timeTillNextWeekStart)
+
+        response += "It is currently week " + str(weekNum) + " (" + timeString + " left)\n"
         response += "The current set is " + leagueutils.getCurrentSet() + "\n"
 
         if leagueutils.getWeekNumber() >= leaguedata.DECK_SIZE_40_WEEK:

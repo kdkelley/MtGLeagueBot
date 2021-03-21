@@ -14,9 +14,12 @@ class JoinCog(commands.Cog):
         leaguedata.addPlayer(ctx.author)
         leaguedata.setPlayerInactive(ctx.author.id)
         leaguedata.setPlayerActive(ctx.author.id)
-        startingEnergy = (leagueutils.getWeekNumber() - 1) * valuestore.getValue("ENERGY_PER_WEEK") + valuestore.getValue("STARTING_ENERGY")
-        if startingEnergy > 0:
-            leaguedata.changePlayerEnergy(ctx.author.id, startingEnergy)
+
+        if leagueutils.getWeekNumber() > 0:
+            startingEnergy = (leagueutils.getWeekNumber() - 1) * valuestore.getValue("ENERGY_PER_WEEK") + valuestore.getValue("STARTING_ENERGY")
+            if startingEnergy > 0:
+                leaguedata.changePlayerEnergy(ctx.author.id, startingEnergy)
+
         response = "Welcome to the league " + ctx.author.name + "!"
         await ctx.send(response)
 
