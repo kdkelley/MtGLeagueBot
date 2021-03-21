@@ -20,6 +20,8 @@ def initialize(ownerid, devMode):
     defaultValueSet("LAST_WEEK_UPDATED", 0)
     defaultValueSet("LEAGUE_WEEKS_DURATION", 3)
 
+    defaultValueSet("PACK_BASE_PRICE", 1000)
+
     defaultValueSet("STARTING_ENERGY", 3000)
     defaultValueSet("ENERGY_PER_PLAY", 250)
     defaultValueSet("ENERGY_WIN_BONUS", 250)

@@ -67,25 +67,16 @@ class UserCog(commands.Cog):
             response += (str(datum[1]).center(5) + " - " + str(datum[2]).center(5)) + " | " + str(datum[0]) + "\n"
         await ctx.send(response)
 
-    @commands.command(aliases=['testopen'], brief="Buys a pack of the given setcode.", help="Buys a pack of the given setcode, but does not open it.")
-    async def testopenpack(self, ctx, setcode):
-        if leaguedata.doesPlayerHaveUnopenedPack(ctx.author.id, setcode):
-            p = Pack()
-            p.generate(setcode)
-            leaguedata.playerOpenExistingPack(ctx.author.id, p)
-            await ctx.send("such a pack was opened")
-        else:
-            await ctx.send("no such unopened pack")
-
-    @commands.command(aliases=['view'], brief="Buys a pack of the given setcode.", help="Buys a pack of the given setcode, but does not open it.")
-    async def viewpacks(self, ctx):
-        leaguedata.getPlayersUnopenedPacks(ctx.author.id)
-        await ctx.send("viewing")
-
     @commands.command(aliases=['buy'], brief="Buys a pack of the given setcode.", help="Buys a pack of the given setcode, but does not open it.")
     async def buypack(self, ctx, setcode):
-        leaguedata.givePlayerUnopenedPack(ctx.author.id, setcode)
-        await ctx.send("Gave you a pack of " + setcode)
+        playerEnergy = leaguedata.getPlayerEnergy(ctx.author.id)
+        if playerEnergy >= valuestore.getValue("PACK_BASE_PRICE"):
+            leaguedata.changePlayerEnergy(ctx.author.id, -1 * valuestore.getValue("PACK_BASE_PRICE"))
+            leaguedata.givePlayerUnopenedPack(ctx.author.id, setcode)
+            await ctx.send("Gave you a pack of " + setcode)
+            return
+        await ctx.send("You don't have enough energy.")
+        return
 
     @commands.command(aliases=['op', "pack", "open"], brief="Opens a pack, should you have one to open.", help="Opens a pack. Begins with the first set out and then opens subsequent packs. Packs earned from losses will be opened last and will always be of the current set.")
     async def openpack(self, ctx, setcode=None):
