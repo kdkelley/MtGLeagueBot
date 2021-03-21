@@ -6,6 +6,8 @@ import leaguedata
 import leagueutils
 from packgen import Pack
 
+import valuestore
+
 class UserCog(commands.Cog):
 
     async def cog_check(self, ctx):
@@ -57,10 +59,10 @@ class UserCog(commands.Cog):
     @commands.command(brief="Shows you the current leaderboard.", help="Shows you the current leaderboard.")
     async def leaderboard(self, ctx):
         leaderboardData = leaguedata.getLeaderboard()
+        print(leaderboardData)
         response = "Leaderboard: \n"
         for datum in leaderboardData:
             response += (str(datum[1]).center(5) + " - " + str(datum[2]).center(5)) + " | " + str(datum[0]) + "\n"
-        response += "\n Users without any wins are not shown in the leaderboard.\n"
         await ctx.send(response)
 
     @commands.command(aliases=['op', "pack", "open"], brief="Opens a pack, should you have one to open.", help="Opens a pack. Begins with the first set out and then opens subsequent packs. Packs earned from losses will be opened last and will always be of the current set.")
@@ -118,8 +120,6 @@ class UserCog(commands.Cog):
 
         uncommonsBody = "*Uncommons:*\n" + "\n".join(uncommonsData) + "\n\n"
         response += uncommonsBody
-
-    #https://gatherer.wizards.com/Handlers/Image.ashx?multiverseid=368970&type=card
 
         def getMIDLink(cardName, surrounder):
             mId = leaguedata.getMultiverseId(cardName, packSet)
@@ -189,29 +189,88 @@ class UserCog(commands.Cog):
             return
 
         gamesToday = leaguedata.getGamesToday(winnerID, loserID)
-        gamesThisWeek = leaguedata.getGamesThisWeek(winnerID, loserID)
+        numGamesToday = len(gamesToday)
 
-        if len(gamesToday) >= valuestore.getValue("MAX_IDENTICAL_GAMES_PER_DAY"):
-            response = "Players have already played " + str(len(gamesToday)) + " time(s) today. (Limit: " + str(leaguedata.MAX_IDENTICAL_GAMES_PER_DAY) + ")\nThe game was not recorded.\n"
+        gamesThisWeek = leaguedata.getGamesThisWeek(winnerID, loserID)
+        numGamesThisWeek = len(gamesThisWeek)
+
+        gamesEver = leaguedata.getGamesEver(winnerID, loserID)
+        numGamesEver = len(gamesEver)
+
+        if numGamesToday >= valuestore.getValue("MAX_IDENTICAL_GAMES_PER_DAY"):
+            response = "Players have already played " + str(numGamesToday) + " time(s) today. (Limit: " + str(leaguedata.MAX_IDENTICAL_GAMES_PER_DAY) + ")\nThe game was not recorded.\n"
             await ctx.send(response)
             return
 
-        if len(gamesThisWeek) >= valuestore.getValue("MAX_IDENTICAL_GAMES_PER_WEEK"):
-            response = "Players have already played " + str(len(gamesThisWeek)) + " time(s) this week. (Limit: " + str(leaguedata.MAX_IDENTICAL_GAMES_PER_WEEK) + ")\nThe game was not recorded.\n"
+        if numGamesThisWeek >= valuestore.getValue("MAX_IDENTICAL_GAMES_PER_WEEK"):
+            response = "Players have already played " + str(numGamesThisWeek) + " time(s) this week. (Limit: " + str(leaguedata.MAX_IDENTICAL_GAMES_PER_WEEK) + ")\nThe game was not recorded.\n"
             await ctx.send(response)
             return
 
         leaguedata.addGame(winnerID, loserID)
         response = "Game successfully recorded.\n"
 
+        winnerRival = leaguedata.getPlayerRival(winnerID)
+        loserRival = leaguedata.getPlayerRival(loserID)
+
+        isWinnerRivalGame = (winnerRival == loserID) and not leaguedata.hasPlayerPlayedRival(winnerID)
+        isLoserRivalGame = (loserRival == winnerID) and not leaguedata.hasPlayerPlayedRival(loserID)
+
         newWins = leaguedata.getPlayerWins(winnerID)
         newLosses = leaguedata.getPlayerLosses(loserID)
 
-        response += leaguedata.getPlayerName(winnerID) + " now has " + str(newWins) + " wins.\n"
-        response += leaguedata.getPlayerName(loserID) + " now has " + str(newLosses) + " losses.\n"
+        basePlayEnergy = valuestore.getValue("ENERGY_PER_PLAY")
+        duplicateGamePlayPenalty = valuestore.getValue("IDENTICAL_GAME_PLAY_ENERGY_DECAY") * numGamesThisWeek
+        minimumPlayEnergy = valuestore.getValue("ENERGY_PER_PLAY_MINIMUM")
 
-        if newLosses % leaguedata.LOSSES_PER_PACK == 0:
-            response += "They may open another pack using \"!league openpack\".\n"
+        baseWinEnergy = valuestore.getValue("ENERGY_WIN_BONUS")
+        duplicateGameWinPenalty = valuestore.getValue("IDENTICAL_GAME_WIN_ENERGY_DECAY") * numGamesThisWeek
+        minimumWinEnergy = valuestore.getValue("ENERGY_WIN_BONUS_MINIMUM")
+
+        rivalGameBonus = valuestore.getValue("PLAY_RIVAL_ENERGY")
+        rivalWinBonus = valuestore.getValue("BEAT_RIVAL_ENERGY")
+
+        firstEverBonus = valuestore.getValue("FIRST_GAME_WITH_PLAYER_BONUS")
+
+        effectiveBasePlayEnergy = max(basePlayEnergy - duplicateGamePlayPenalty, minimumPlayEnergy)
+        effectiveWinBonusEnergy = max(baseWinEnergy - duplicateGameWinPenalty, minimumWinEnergy)
+        winEnergy = effectiveBasePlayEnergy + effectiveWinBonusEnergy
+
+        winnerEnergy = winEnergy
+        loserEnergy = effectiveBasePlayEnergy
+
+        if isWinnerRivalGame:
+            winnerEnergy += rivalGameBonus
+            winnerEnergy += rivalWinBonus
+            leaguedata.setHasPlayedRival(winnerID, 1)
+        
+        if isLoserRivalGame:
+            loserEnergy += rivalGameBonus
+            leaguedata.setHasPlayedRival(loserID, 1)
+
+        if numGamesEver == 0:
+            winnerEnergy += valuestore.getValue("FIRST_GAME_WITH_PLAYER_BONUS")
+            loserEnergy += valuestore.getValue("FIRST_GAME_WITH_PLAYER_BONUS")
+
+        leaguedata.changePlayerEnergy(winnerID, winnerEnergy)
+        leaguedata.changePlayerEnergy(loserID, loserEnergy)
+
+        response += leaguedata.getPlayerName(winnerID) + " now has " + str(newWins) + " wins and gains " + str(winnerEnergy) + " energy.\n"
+        response += leaguedata.getPlayerName(loserID) + " now has " + str(newLosses) + " losses and gains " + str(loserEnergy) + " energy.\n"
+
+        response += "\nEnergy breakdown:\n"
+        response += "\tBase Energy: " + str(effectiveBasePlayEnergy) + "\n"
+        response += "\t\t\tBase Play Energy: " + str(basePlayEnergy) + "\n"
+        response += "\t\t\tDuplicate Game Penalty: " + str(effectiveBasePlayEnergy - basePlayEnergy) + "\n"
+        response += "\tWin Bonus Energy: " + str(effectiveWinBonusEnergy) + "\n"
+        response += "\t\t\tBase Win Energy: " + str(baseWinEnergy) + "\n"
+        response += "\t\t\tDuplicate Game Penalty: " + str(effectiveWinBonusEnergy - baseWinEnergy) + "\n"
+
+        if isWinnerRivalGame or isLoserRivalGame:
+            response += "\tRival Game Energy: " + str(rivalGameBonus) + "\n"
+
+        if numGamesEver == 0:
+            response += "\tFirst Ever Time Playing Together: " + str(firstEverBonus)
 
         await ctx.send(response)
 
@@ -239,9 +298,14 @@ class UserCog(commands.Cog):
 
         if not rivalID == -1:
             rivalName = leaguedata.getPlayerName(rivalID)
-            response += "Your rival is " + rivalName + ".\n\n"
+            response += "Your rival is " + rivalName + ". "
         else:
-            response += "You currently have no valid rival.\n\n"
+            response += "You currently have no valid rival. "
+
+        if leaguedata.hasPlayerPlayedRival(ctx.author.id):
+            response += "You have already played them this week."
+
+        response += "\n\n"
 
         response += "It is currently week " + str(leagueutils.getWeekNumber()) + " (" + str(leagueutils.getDaysLeftInWeek()) + " day(s) left)\n"
         response += "The current set is " + leagueutils.getCurrentSet() + "\n"

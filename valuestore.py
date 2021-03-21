@@ -24,9 +24,10 @@ def initialize(ownerid, devMode):
     defaultValueSet("ENERGY_PER_WEEK", 1000)
     defaultValueSet("PLAY_RIVAL_ENERGY", 250)
     defaultValueSet("BEAT_RIVAL_ENERGY", 0)
+    defaultValueSet("FIRST_GAME_WITH_PLAYER_BONUS", 250)
 
     defaultValueSet("IDENTICAL_GAME_PLAY_ENERGY_DECAY", 50)
-    defaultValueSet("IDENTICAL_GAME_WIN_ENERGY_DECAY", 50)
+    defaultValueSet("IDENTICAL_GAME_WIN_ENERGY_DECAY", 100)
     defaultValueSet("ENERGY_PER_PLAY_MINIMUM", 50)
     defaultValueSet("ENERGY_WIN_BONUS_MINIMUM", 50)
 

@@ -7,13 +7,15 @@ import math
 import leaguedata
 from packgen import Pack
 
+import valuestore
+
 def getWeekNumber():
-    delta = date.today() - leaguedata.START_DATE
+    delta = date.today() - valuestore.getValue("START_DATE")
     return (math.floor(delta.days / 7) + 1)
 
 def getDaysLeftInWeek():
     todayDay = date.today().weekday()
-    leagueDay = leaguedata.START_DATE.weekday()
+    leagueDay = valuestore.getValue("START_DATE").weekday()
     rawDay = 7 - ((todayDay - leagueDay) % 7)
     return rawDay
 

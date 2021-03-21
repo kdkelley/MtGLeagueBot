@@ -305,6 +305,26 @@ def getGamesThisWeek(player1ID, player2ID):
         times.append(row[0])
     return times
 
+def getGamesEver(player1ID, player2ID):
+    command = """
+    SELECT
+    timestamp
+    FROM
+    games
+    WHERE
+    (winner = ?
+    OR
+    loser = ?)
+    AND
+    (winner = ?
+    OR
+    loser = ?)
+    """
+    times = []
+    for row in c.execute(command, (player1ID, player1ID, player2ID, player2ID)):
+        times.append(row[0])
+    return times
+
 class GameData:
     def __init__(self, id, winnerID, loserID, timestamp):
         self.id = id
@@ -461,8 +481,10 @@ def getLeaderboard():
     global c
     command = """
     SELECT
-    name, wins, losses
+    name, COALESCE(wins, 0), COALESCE(losses, 0)
     FROM
+    players
+    LEFT JOIN
     (
         SELECT winner,
         COUNT(*)
@@ -471,13 +493,10 @@ def getLeaderboard():
         GROUP BY winner
     )
     winners
-    INNER JOIN
-    players
     ON
-    winners.winner=players.id
+    players.id=winners.winner
 
-
-    INNER JOIN
+    LEFT JOIN
     (
         SELECT loser,
         COUNT(*)
@@ -487,7 +506,7 @@ def getLeaderboard():
     )
     losers
     ON
-    losers.loser=players.id
+    players.id=losers.loser
 
     ORDER BY
     wins DESC,
