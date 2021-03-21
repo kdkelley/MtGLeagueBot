@@ -10,14 +10,6 @@ class DevCog(commands.Cog):
         return (leaguedata.isMod(ctx.author.id)) and (not leagueutils.isPM(ctx.message))
 
     @commands.command()
-    async def changestartdate(self, ctx, yearStr, monthStr, dayStr):
-        year = int(yearStr)
-        month = int(monthStr)
-        day = int(dayStr)
-        leaguedata.START_DATE = date(year, month, day)
-        await ctx.send("Updated start date to {0}/{1}/{2}".format(month, day, year))
-
-    @commands.command()
     async def wipedb(self, ctx):
         leaguedata.kill()
         leaguedata.connect(True, True)

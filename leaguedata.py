@@ -12,7 +12,6 @@ import random
 
 OWNER_ID = 260682887421100034
 DB_PATH = "data/LeagueData.sqlite"
-START_DATE = date(2020, 9, 24)
 BASE_PACKS = 3
 LOSSES_PER_PACK = 3
 FRF_RELEASE_WEEK = 4
@@ -52,7 +51,8 @@ packid INTEGER PRIMARY KEY AUTOINCREMENT,
 playerid INTEGER,
 setcode TEXT,
 isLoss INTEGER DEFAULT 0,
-contents TEXT,
+contents TEXT DEFAULT NULL,
+isOpened INTEGER DEFAULT 0,
 timestamp DATETIME DEFAULT (DATETIME('now', 'localtime'))
 ); """
 
@@ -283,7 +283,7 @@ def getGamesToday(player1ID, player2ID):
     return times
 
 def getGamesThisWeek(player1ID, player2ID):
-    startWeekday = START_DATE.weekday()
+    startWeekday = datastore.getValue("START_DATE").weekday()
     todayWeekday = date.today().weekday()
     daysBack = -1 * ((todayWeekday + (7 - startWeekday)) % 7)
     command = """

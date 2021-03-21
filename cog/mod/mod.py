@@ -101,7 +101,7 @@ class ModCog(commands.Cog):
         await ctx.send("Announcement channel changed.")
 
     @commands.command(brief="This is the role that will be mentioned by the bot in the weekly report.", help="Takes a mention of the role you would like the bot to then go on to mention.")
-    async def attuneRole(self, ctx, role):
+    async def attunerole(self, ctx, role):
         valuestore.setValue("ROLE_ID", leagueutils.getIDFromMention(role))
         await ctx.send("Announcement role changed.")
 
