@@ -2,6 +2,7 @@ import shelve
 import os.path
 from os import path
 import datetime
+from datetime import timedelta
 
 VALUE_STORE_FILE_PATH = "data/valuestore/values"
 
@@ -15,7 +16,7 @@ def initialize(ownerid, devMode):
     values["OWNER_ID"] = ownerid
 
     defaultValueSet("DB_PATH", "data/LeagueData.sqlite")
-    defaultValueSet("START_DATE", datetime.datetime.now())
+    defaultValueSet("START_DATE", datetime.datetime.now() + timedelta(days=7))
     defaultValueSet("LAST_WEEK_UPDATED", 0)
     defaultValueSet("LEAGUE_WEEKS_DURATION", 3)
 
@@ -34,7 +35,6 @@ def initialize(ownerid, devMode):
 
     defaultValueSet("MAX_IDENTICAL_GAMES_PER_DAY", 99)
     defaultValueSet("MAX_IDENTICAL_GAMES_PER_WEEK", 99)
-
 
     values.sync()
 
