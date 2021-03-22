@@ -12,14 +12,8 @@ import random
 
 OWNER_ID = 260682887421100034
 DB_PATH = "data/LeagueData.sqlite"
-BASE_PACKS = 3
-LOSSES_PER_PACK = 3
 FRF_RELEASE_WEEK = 4
 DTK_RELEASE_WEEK = 7
-END_WEEK = 10
-MAX_IDENTICAL_GAMES_PER_DAY = 3
-MAX_IDENTICAL_GAMES_PER_WEEK = 9
-DECK_SIZE_40_WEEK = 4
 
 SQL_CREATE_PLAYER_TABLE = """ CREATE TABLE IF NOT EXISTS players (
 id INTEGER PRIMARY KEY,
@@ -194,15 +188,6 @@ def setPlayerRival(playerid, rivalid):
     global conn
     c.execute("UPDATE players SET rivalID=? WHERE id=?", (rivalid, playerid, ))
     conn.commit()
-
-def getPlayerMaxPacks(id):
-    playerLosses = getPlayerLosses(id)
-    losspacks = math.floor(playerLosses / LOSSES_PER_PACK)
-    weekNumber = leagueutils.getWeekNumber()
-    KTKpacks = max(BASE_PACKS + min(weekNumber, FRF_RELEASE_WEEK - 1) - 1, BASE_PACKS)
-    FRFpacks = max(min((weekNumber - FRF_RELEASE_WEEK) + 1, DTK_RELEASE_WEEK - FRF_RELEASE_WEEK), 0)
-    DTKpacks = max(min((weekNumber - DTK_RELEASE_WEEK) + 1, END_WEEK - DTK_RELEASE_WEEK),  0)
-    return KTKpacks, FRFpacks, DTKpacks, losspacks
 
 def getPlayerOpenedPacks(id):
     global c
