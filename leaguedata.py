@@ -8,10 +8,10 @@ from sqlite3 import Error
 import leagueutils
 from packgen import Pack
 
+import valuestore
+
 import random
 
-OWNER_ID = 260682887421100034
-DB_PATH = "data/LeagueData.sqlite"
 FRF_RELEASE_WEEK = 4
 DTK_RELEASE_WEEK = 7
 
@@ -270,7 +270,7 @@ def setPlayerName(id, name):
 
 def isMod(id):
     global c
-    if id == OWNER_ID:
+    if id == valuestore.getValue("OWNER_ID"):
         return True
     for row in c.execute("SELECT COUNT(*) FROM players WHERE id=? AND isMod=1", (id,)):
         return row[0] == 1
@@ -299,7 +299,7 @@ def deletePack(packID):
     c.execute("DELETE FROM packs WHERE packid=?", (packID,))
 
 def isOwner(id):
-    return id == OWNER_ID
+    return id == valuestore.getValue("OWNER_ID")
 
 def getGamesToday(player1ID, player2ID):
     command = """
@@ -562,7 +562,8 @@ def connect(wipeTables=False, onStart=False):
     global conn
     global c
     try:
-        conn = sqlite3.connect(DB_PATH, detect_types=sqlite3.PARSE_DECLTYPES | sqlite3.PARSE_COLNAMES)
+        dbPath = valuestore.getValue("DB_PATH")
+        conn = sqlite3.connect(dbPath, detect_types=sqlite3.PARSE_DECLTYPES | sqlite3.PARSE_COLNAMES)
         print("Database Connected!")
         c = conn.cursor()
         if wipeTables and onStart:

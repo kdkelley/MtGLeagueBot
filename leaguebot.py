@@ -36,13 +36,13 @@ if DEV_MODE:
 else:
     TOKEN = os.getenv('NORMAL_TOKEN')
 
+valuestore.initialize(os.getenv("OWNER_ID"), DEV_MODE)
+
 leaguedata.connect(args.wipe, True)
 
 DESCRIPTION_TEXT = "A bot that manages a MtG league.\n\n Note: The card \'Fire\' stands for \'Fire \\\\ Ice\'."
 
 bot = commands.Bot(command_prefix=COMMAND_PHRASE + " ", description=DESCRIPTION_TEXT)
-
-valuestore.initialize(os.getenv("OWNER_ID"), DEV_MODE)
 
 @bot.event
 async def on_ready():

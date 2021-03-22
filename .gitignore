@@ -1,5 +1,6 @@
 *.env
-data/
+data/*.sqlite
+data/valuestore/*
 logs/
 __pycache__/
 runbot.sh
