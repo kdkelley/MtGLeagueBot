@@ -204,13 +204,16 @@ class UserCog(commands.Cog):
         gamesEver = leaguedata.getGamesEver(winnerID, loserID)
         numGamesEver = len(gamesEver)
 
-        if numGamesToday >= valuestore.getValue("MAX_IDENTICAL_GAMES_PER_DAY"):
-            response = "Players have already played " + str(numGamesToday) + " time(s) today. (Limit: " + str(leaguedata.MAX_IDENTICAL_GAMES_PER_DAY) + ")\nThe game was not recorded.\n"
+        maxGamesToday = valuestore.getValue("MAX_IDENTICAL_GAMES_PER_DAY")
+        maxGamesThisWeek = valuestore.getValue("MAX_IDENTICAL_GAMES_PER_WEEK")
+
+        if numGamesToday >= maxGamesToday:
+            response = "Players have already played " + str(numGamesToday) + " time(s) today. (Limit: " + str(maxGamesToday) + ")\nThe game was not recorded.\n"
             await ctx.send(response)
             return
 
-        if numGamesThisWeek >= valuestore.getValue("MAX_IDENTICAL_GAMES_PER_WEEK"):
-            response = "Players have already played " + str(numGamesThisWeek) + " time(s) this week. (Limit: " + str(leaguedata.MAX_IDENTICAL_GAMES_PER_WEEK) + ")\nThe game was not recorded.\n"
+        if numGamesThisWeek >= maxGamesThisWeek:
+            response = "Players have already played " + str(numGamesThisWeek) + " time(s) this week. (Limit: " + str(maxGamesThisWeek) + ")\nThe game was not recorded.\n"
             await ctx.send(response)
             return
 
@@ -326,7 +329,9 @@ class UserCog(commands.Cog):
         response += "It is currently week " + str(weekNum) + " (" + timeString + " left)\n"
         response += "The current set is " + leagueutils.getCurrentSet() + "\n"
 
-        if leagueutils.getWeekNumber() >= leaguedata.DECK_SIZE_40_WEEK:
+        deckSize40Week = valuestore.getValue("DECK_SIZE_40_WEEK")
+
+        if leagueutils.getWeekNumber() >= deckSize40Week:
             response += "Decks should be 40 cards.\n\n"
         else:
             response += "Decks should be 30 cards, but will need to be 40 cards starting on week 4.\n\n"

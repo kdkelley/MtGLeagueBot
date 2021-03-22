@@ -19,6 +19,11 @@ def initialize(ownerid, devMode):
     defaultValueSet("START_DATE", datetime.datetime.now() + timedelta(days=7))
     defaultValueSet("LAST_WEEK_UPDATED", 0)
     defaultValueSet("LEAGUE_WEEKS_DURATION", 3)
+    defaultValueSet("LEAGUE_STARTING_PACKS", ("M19", "M20", "M21"))
+    defaultValueSet("LEAGUE_WEEKS_SET", ("M19", "M20", "M21"))
+    defaultValueSet("LEAGUE_WEEKS_PACKS", (0, 0, 0))
+
+    defaultValueSet("DECK_SIZE_40_WEEK", 4)
 
     defaultValueSet("PACK_BASE_PRICE", 1000)
 
