@@ -28,6 +28,18 @@ GitPython:
 pip install GitPython
 ```
 
+PyYAML:
+
+```
+pip install PyYAML
+```
+
+Jinja2:
+
+```
+pip install Jinja2
+```
+
 If you haven't already at this point you'll need to [create your application on discord](https://discord.com/developers/docs/intro).
 
 You then need to make a file in the root directory named .env, and have its contents look something like this:
@@ -35,9 +47,10 @@ You then need to make a file in the root directory named .env, and have its cont
 ```
 NORMAL_TOKEN="[BOT TOKEN]"
 DEV_TOKEN="[BOT TOKEN]"
+OWNER_ID="[YOUR DISCORD ID]"
 ```
 
-Where [BOT TOKEN] is the token for the bot of your discord application. The DEV_TOKEN is used if the bot is running in dev mode.
+Where [BOT TOKEN] is the token for the bot of your discord application. The DEV_TOKEN is used if the bot is running in dev mode. [YOUR DISCORD ID] should be your personal account ID on discord, or at least the id of the user you want to be considered the owner of the bot for permissions.
 
 You will also need to download the .sqlite database for all of the MtG cards created by the MtGJSON project from [here](https://mtgjson.com/api/v5/AllPrintings.sqlite).
 
