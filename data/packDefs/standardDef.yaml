@@ -1,0 +1,39 @@
+cards:
+  minimumWhite: 1
+  minimumBlue: 1
+  minimumBlack: 1
+  minimumRed: 1
+  minimumGreen: 1
+  set: "{{set}}"
+  commons:
+    count: 10
+    rarity: "common"
+  uncommons:
+    count: 3
+    rarity: "uncommon"
+  rareSlot:
+    rare:
+      count: 1
+      rarity: "rare"
+      weight: 7
+    mythic:
+      count: 1
+      rarity: "mythic"
+      weight: 1
+  foilSlot:
+      notFoil:
+        count: 1
+        rarity: "common"
+        weight: 3872
+      uncommonFoil:
+        count: 1
+        rarity: "uncommon"
+        weight: 242
+      rareFoil:
+        count: 1
+        rarity: "rare"
+        weight: 106
+      mythicFoil:
+        count: 1
+        rarity: "mythic"
+        weight: 15
