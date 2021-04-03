@@ -1,0 +1,67 @@
+league:
+  dirs:
+    valuestoreFilePath: "data/valuestore/values"
+    dbPath: data/LeagueData.sqlite
+    packDefs: data/packDefs
+  energy:
+    startingEnergy: 3000
+    energyPerPlay: 250
+    energyWinBonus: 250
+    playRivalEnergy: 250
+    beatRivalEnergy: 0
+    firstGameWithPlayerBonus: 250
+    identicalGamePlayEnergyDecay: 50
+    identicalGameWinEnergyDecay: 100
+    energyPerPlayMinimum: 50
+    energyWinBonusMinimum: 50
+  maxIdenticalGamesPerDay: 99
+  maxIdenticalGamesPerWeek: 99
+  packs:
+    - name: "M10"
+      def: "standardDef"
+      type: "yaml"
+      args:
+        - set: "M10"
+    - name: "M11"
+      def: "standardDef"
+      type: "yaml"
+      args:
+        - set: "M11"
+    - name: "M12"
+      def: "standardDef"
+      type: "yaml"
+      args:
+        - set: "M12"
+# TODO add the ability to replace a pack def with a function
+  weeks:
+
+    - weekName: "Week 1"
+      weeklyPack: null
+      weeklyEnergy: null
+      packs:
+        - name: "M19"
+          cost: 1000
+      displayProps:
+        - decksize: "The current decksize is 30."
+
+    - weekName: "Week 2"
+      weeklyPack: "M19"
+      weeklyEnergy: 1000
+      packs:
+        - name: "M19"
+          cost: 2000
+        - name: "M20"
+          cost: 1000
+
+    - weekName: "Week 3"
+      displayProps:
+        - decksize: "The current decksize is 40."
+        - announcement: "This week stuff is happening."
+
+    - weekName: "Week 4"
+
+    - weekName: "Week 5"
+      displayProps:
+        - decksize: null
+
+    - weekName: "Week 6"
